@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.OrderGoodsMapper">
+
+    <resultMap type="com.hl.childhood.module.OrderGoods" id="orderGoodsResult">
+        <result column="tog_id" property="tog_id"/>
+        <result column="order_id" property="order_id"/>
+        <result column="spe_id" property="spe_id"/>
+        <result column="spe_num" property="spe_num"/>
+        <result column="spe_price" property="spe_price"/>
+        <result column="spe_seq" property="spe_seq"/>
+    </resultMap>
+
+    <sql id="table">
+        t_order_goods
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            tog_id,
+            order_id,
+            spe_id,
+            spe_num,
+            spe_price,
+            spe_seq
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="tog_id != null and tog_id != ''">tog_id,</if>
+            <if test="order_id != null and order_id != ''">order_id,</if>
+            <if test="spe_id != null and spe_id != ''">spe_id,</if>
+            <if test="spe_num != null ">spe_num,</if>
+            <if test="spe_price != null and spe_price != '' ">spe_price,</if>
+            <if test="spe_seq != null ">spe_seq,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="tog_id != null and tog_id != ''">#{tog_id,jdbcType=VARCHAR},</if>
+            <if test="order_id != null and order_id != ''">#{order_id,jdbcType=VARCHAR},</if>
+            <if test="spe_id != null and spe_id != ''">#{spe_id,jdbcType=VARCHAR},</if>
+            <if test="spe_num != null ">${spe_num},</if>
+            <if test="spe_price != null and spe_price != ''">#{spe_price,jdbcType=VARCHAR},</if>
+            <if test="spe_seq != null">${spe_seq},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="order_id != null">
+                order_id=#{order_id,jdbcType=VARCHAR},
+            </if>
+            <if test="spe_id != null and spe_id != ''">
+                spe_id=#{spe_id,jdbcType=VARCHAR},
+            </if>
+            <if test="spe_num != null ">
+                spe_num=${spe_num},
+            </if>
+            <if test="spe_price != null and spe_price != ''">
+                spe_price=#{spe_price,jdbcType=VARCHAR},
+            </if>
+            <if test="spe_seq != null ">
+                spe_seq=${spe_seq},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.order_id != null and t.order_id != '' ">and order_id like
+                    concat('%',#{t.order_id},'%')
+                </if>
+                <if test="t.spe_id != null   and t.spe_id != '' ">and spe_id like
+                    concat('%',#{t.spe_id},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.tog_id != null  and t.tog_id != '' ">and tog_id =
+                    #{t.tog_id}
+                </if>
+                <if test="t.order_id != null  and t.order_id != '' ">and order_id =
+                    #{t.order_id}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        tog_id = #{tog_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by tog_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="orderGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_order_goods
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="orderGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_order_goods
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_order_goods (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_order_goods
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="orderGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_order_goods
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY tog_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_order_goods
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_order_goods
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="orderGoodsResult">
+        delete from t_order_goods
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="orderGoodsResult">
+        delete from t_order_goods
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="orderGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_order_goods
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

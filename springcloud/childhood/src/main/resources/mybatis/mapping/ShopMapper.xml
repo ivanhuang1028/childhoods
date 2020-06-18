@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.ShopMapper">
+
+    <resultMap type="com.hl.childhood.module.Shop" id="shopResult">
+        <result column="shop_id" property="shop_id"/>
+        <result column="merchant_id" property="merchant_id"/>
+        <result column="shop_name" property="shop_name"/>
+        <result column="shop_province" property="shop_province"/>
+        <result column="shop_city" property="shop_city"/>
+        <result column="shop_region" property="shop_region"/>
+        <result column="shop_address" property="shop_address"/>
+        <result column="shop_status" property="shop_status"/>
+    </resultMap>
+
+    <sql id="table">
+        t_shop
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            shop_id,
+            merchant_id,
+            shop_name,
+            shop_province,
+            shop_city,
+            shop_region,
+            shop_address,
+            shop_status
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="shop_id != null and shop_id != ''">shop_id,</if>
+            <if test="merchant_id != null and merchant_id != ''">merchant_id,</if>
+            <if test="shop_name != null and shop_name != ''">shop_name,</if>
+            <if test="shop_province != null and shop_province != ''">shop_province,</if>
+            <if test="shop_city != null and shop_city != ''">shop_city,</if>
+            <if test="shop_region != null and shop_region != ''">shop_region,</if>
+            <if test="shop_address != null and shop_address != '' ">shop_address,</if>
+            <if test="shop_status != null ">shop_status,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="shop_id != null and shop_id != ''">#{shop_id,jdbcType=VARCHAR},</if>
+            <if test="merchant_id != null and merchant_id != ''">#{merchant_id,jdbcType=VARCHAR},</if>
+            <if test="shop_name != null and shop_name != ''">#{shop_name,jdbcType=VARCHAR},</if>
+            <if test="shop_province != null and shop_province != ''">#{shop_province,jdbcType=VARCHAR},</if>
+            <if test="shop_city != null and shop_city != ''">#{shop_city,jdbcType=VARCHAR},</if>
+            <if test="shop_region != null and shop_region != ''">#{shop_region,jdbcType=VARCHAR},</if>
+            <if test="shop_address != null and shop_address != ''">#{shop_address,jdbcType=VARCHAR},</if>
+            <if test="shop_status != null">${shop_status},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="merchant_id != null">
+                merchant_id=#{merchant_id,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_name != null and shop_name != ''">
+                shop_name=#{shop_name,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_province != null and shop_province != ''">
+                shop_province=#{shop_province,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_city != null and shop_city != ''">
+                shop_city=#{shop_city,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_region != null and shop_region != ''">
+                shop_region=#{shop_region,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_address != null and shop_address != ''">
+                shop_address=#{shop_address,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_status != null">
+                shop_status=${shop_status},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.merchant_id != null and t.merchant_id != '' ">and merchant_id like
+                    concat('%',#{t.merchant_id},'%')
+                </if>
+                <if test="t.shop_name != null   and t.shop_name != '' ">and shop_name like
+                    concat('%',#{t.shop_name},'%')
+                </if>
+                <if test="t.shop_province != null and t.shop_province != '' ">and shop_province like
+                    concat('%',#{t.shop_province},'%')
+                </if>
+                <if test="t.shop_region != null and t.shop_region != '' ">and shop_region like
+                    concat('%',#{t.shop_region},'%')
+                </if>
+                <if test="t.shop_address != null and t.shop_address != '' ">and shop_address like
+                    concat('%',#{t.shop_address},'%')
+                </if>
+                <if test="t.shop_status != null   ">and shop_status = ${t.shop_status}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.shop_id != null  and t.shop_id != '' ">and shop_id =
+                    #{t.shop_id}
+                </if>
+                <if test="t.merchant_id != null  and t.merchant_id != '' ">and merchant_id =
+                    #{t.merchant_id}
+                </if>
+                <if test="t.shop_name != null  and t.shop_name != '' ">and shop_name =
+                    #{t.shop_name}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        shop_id = #{shop_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by shop_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="shopResult">
+        select
+        <include refid="tableColumns"/>
+        from t_shop
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="shopResult">
+        select
+        <include refid="tableColumns"/>
+        from t_shop
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_shop (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_shop
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="shopResult">
+        select
+        <include refid="tableColumns"/>
+        from t_shop
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY shop_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_shop
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_shop
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="shopResult">
+        delete from t_shop
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="shopResult">
+        delete from t_shop
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="shopResult">
+        select
+        <include refid="tableColumns"/>
+        from t_shop
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

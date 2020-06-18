@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.UserCouponMapper">
+
+    <resultMap type="com.hl.childhood.module.UserCoupon" id="userCouponResult">
+        <result column="uc_id" property="uc_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="coupon_id" property="coupon_id"/>
+        <result column="create_time" property="create_time"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <sql id="table">
+        t_user_coupon
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            uc_id,
+            user_id,
+            coupon_id,
+            create_time,
+            status
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="uc_id != null and uc_id != ''">uc_id,</if>
+            <if test="user_id != null and user_id != ''">user_id,</if>
+            <if test="coupon_id != null and coupon_id != ''">coupon_id,</if>
+            <if test="create_time != null and create_time != ''">create_time,</if>
+            <if test="status != null ">status,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="uc_id != null and uc_id != ''">#{uc_id,jdbcType=VARCHAR},</if>
+            <if test="user_id != null and user_id != ''">#{user_id,jdbcType=VARCHAR},</if>
+            <if test="coupon_id != null and coupon_id != ''">#{coupon_id,jdbcType=VARCHAR},</if>
+            <if test="create_time != null and create_time != ''">#{create_time,jdbcType=VARCHAR},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="user_id != null">
+                user_id=#{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="coupon_id != null and coupon_id != ''">
+                coupon_id=#{coupon_id,jdbcType=VARCHAR},
+            </if>
+            <if test="create_time != null and create_time != ''">
+                create_time=#{create_time,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.user_id != null and t.user_id != '' ">and user_id like
+                    concat('%',#{t.user_id},'%')
+                </if>
+                <if test="t.coupon_id != null   and t.coupon_id != '' ">and coupon_id like
+                    concat('%',#{t.coupon_id},'%')
+                </if>
+                <if test="t.create_time != null and t.create_time != '' ">and create_time like
+                    concat('%',#{t.create_time},'%')
+                </if>
+                <if test="t.status != null   and t.status != '' ">and status like
+                    concat('%',#{t.status},'%')
+                </if>
+                <if test="t.image_user != null   and t.image_user != ''    ">and image_user like
+                    concat('%',#{t.image_user},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.uc_id != null  and t.uc_id != '' ">and uc_id =
+                    #{t.uc_id}
+                </if>
+                <if test="t.user_id != null  and t.user_id != '' ">and user_id =
+                    #{t.user_id}
+                </if>
+                <if test="t.coupon_id != null  and t.coupon_id != '' ">and coupon_id =
+                    #{t.coupon_id}
+                </if>
+                <if test="t.create_time != null  and t.create_time != ''  ">and create_time =
+                    #{t.create_time}
+                </if>
+                <if test="t.status != null  ">and status =
+                    #{t.status}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        uc_id = #{uc_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by uc_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="userCouponResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user_coupon
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="userCouponResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user_coupon
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_user_coupon (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_user_coupon
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="userCouponResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user_coupon
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY uc_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_user_coupon
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_user_coupon
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="userCouponResult">
+        delete from t_user_coupon
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="userCouponResult">
+        delete from t_user_coupon
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="userCouponResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user_coupon
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

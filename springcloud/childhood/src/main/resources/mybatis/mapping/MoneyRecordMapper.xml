@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.MoneyRecordMapper">
+
+    <resultMap type="com.hl.childhood.module.MoneyRecord" id="moneyRecordResult">
+        <result column="mr_id" property="mr_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="mr_type" property="mr_type"/>
+        <result column="order_id" property="order_id"/>
+        <result column="commission" property="commission"/>
+        <result column="cr_id" property="cr_id"/>
+        <result column="cr_num" property="cr_num"/>
+        <result column="commit_money" property="commit_money"/>
+        <result column="current_money" property="current_money"/>
+        <result column="create_time" property="create_time"/>
+    </resultMap>
+
+    <sql id="table">
+        t_money_record
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            mr_id,
+            user_id,
+            mr_type,
+            order_id,
+            commission,
+            cr_id,
+            cr_num,
+            commit_money,
+            current_money,
+            create_time
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="mr_id != null and mr_id != ''">mr_id,</if>
+            <if test="user_id != null and user_id != ''">user_id,</if>
+            <if test="mr_type != null ">mr_type,</if>
+            <if test="order_id != null and order_id != ''">order_id,</if>
+            <if test="commission != null and commission != ''">commission,</if>
+            <if test="cr_id != null and cr_id != ''">cr_id,</if>
+            <if test="cr_num != null and cr_num != '' ">cr_num,</if>
+            <if test="commit_money != null and commit_money != '' ">commit_money,</if>
+            <if test="current_money != null and current_money != ''">current_money,</if>
+            create_time,
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="mr_id != null and mr_id != ''">#{mr_id,jdbcType=VARCHAR},</if>
+            <if test="user_id != null and user_id != ''">#{user_id,jdbcType=VARCHAR},</if>
+            <if test="mr_type != null ">${mr_type},</if>
+            <if test="order_id != null and order_id != ''">#{order_id,jdbcType=VARCHAR},</if>
+            <if test="commission != null and commission != ''">#{commission,jdbcType=VARCHAR},</if>
+            <if test="cr_id != null and cr_id != ''">#{cr_id,jdbcType=VARCHAR},</if>
+            <if test="cr_num != null and cr_num != ''">#{cr_num,jdbcType=VARCHAR},</if>
+            <if test="commit_money != null and commit_money != '' ">#{commit_money,jdbcType=VARCHAR},</if>
+            <if test="current_money != null and current_money != ''">#{current_money,jdbcType=VARCHAR},</if>
+            now(),
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="user_id != null and user_id != ''">
+                user_id=#{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="mr_type != null ">
+                mr_type=${mr_type},
+            </if>
+            <if test="order_id != null and order_id != ''">
+                order_id=#{order_id,jdbcType=VARCHAR},
+            </if>
+            <if test="commission != null and commission != ''">
+                commission=#{commission,jdbcType=VARCHAR},
+            </if>
+            <if test="cr_id != null and cr_id != ''">
+                cr_id=#{cr_id,jdbcType=VARCHAR},
+            </if>
+            <if test="cr_num != null and cr_num != ''">
+                cr_num=#{cr_num,jdbcType=VARCHAR},
+            </if>
+            <if test="commit_money != null and commit_money != '' ">
+                commit_money=#{commit_money,jdbcType=VARCHAR},
+            </if>
+            <if test="current_money != null and current_money != ''">
+                current_money=#{current_money,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.user_id != null and t.user_id != '' ">and user_id like
+                    concat('%',#{t.user_id},'%')
+                </if>
+                <if test="t.mr_type != null   and t.mr_type != '' ">and mr_type like
+                    concat('%',#{t.mr_type},'%')
+                </if>
+                <if test="t.order_id != null and t.order_id != '' ">and order_id like
+                    concat('%',#{t.order_id},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.mr_id != null  and t.mr_id != '' ">and mr_id =
+                    #{t.mr_id}
+                </if>
+                <if test="t.user_id != null  and t.user_id != '' ">and user_id =
+                    #{t.user_id}
+                </if>
+                <if test="t.mr_type != null  and t.mr_type != '' ">and mr_type =
+                    #{t.mr_type}
+                </if>
+                <if test="t.order_id != null  and t.order_id != ''  ">and order_id =
+                    #{t.order_id}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        mr_id = #{mr_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by mr_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="moneyRecordResult">
+        select
+        <include refid="tableColumns"/>
+        from t_money_record
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="moneyRecordResult">
+        select
+        <include refid="tableColumns"/>
+        from t_money_record
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_money_record (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_money_record
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="moneyRecordResult">
+        select
+        <include refid="tableColumns"/>
+        from t_money_record
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY mr_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_money_record
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_money_record
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="moneyRecordResult">
+        delete from t_money_record
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="moneyRecordResult">
+        delete from t_money_record
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="moneyRecordResult">
+        select
+        <include refid="tableColumns"/>
+        from t_money_record
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

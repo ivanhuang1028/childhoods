@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.PromotionGoodsMapper">
+
+    <resultMap type="com.hl.childhood.module.PromotionGoods" id="promotionGoodsResult">
+        <result column="pg_id" property="pg_id"/>
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="spe_id" property="spe_id"/>
+        <result column="promotion_price" property="promotion_price"/>
+        <result column="promotion_inventory" property="promotion_inventory"/>
+        <result column="pg_seq" property="pg_seq"/>
+    </resultMap>
+
+    <sql id="table">
+        t_promotion_goods
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            pg_id,
+            promotion_id,
+            spe_id,
+            promotion_price,
+            promotion_inventory,
+            pg_seq
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="pg_id != null and pg_id != ''">pg_id,</if>
+            <if test="promotion_id != null and promotion_id != ''">promotion_id,</if>
+            <if test="spe_id != null and spe_id != ''">spe_id,</if>
+            <if test="promotion_price != null and promotion_price != ''">promotion_price,</if>
+            <if test="promotion_inventory != null ">promotion_inventory,</if>
+            <if test="pg_seq != null ">pg_seq,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="pg_id != null and pg_id != ''">#{pg_id,jdbcType=VARCHAR},</if>
+            <if test="promotion_id != null and promotion_id != ''">#{promotion_id,jdbcType=VARCHAR},</if>
+            <if test="spe_id != null and spe_id != ''">#{spe_id,jdbcType=VARCHAR},</if>
+            <if test="promotion_price != null and promotion_price != ''">#{promotion_price,jdbcType=VARCHAR},</if>
+            <if test="promotion_inventory != null ">${promotion_inventory},</if>
+            <if test="pg_seq != null ">${pg_seq},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="promotion_id != null">
+                promotion_id=#{promotion_id,jdbcType=VARCHAR},
+            </if>
+            <if test="spe_id != null and spe_id != ''">
+                spe_id=#{spe_id,jdbcType=VARCHAR},
+            </if>
+            <if test="promotion_price != null and promotion_price != ''">
+                promotion_price=#{promotion_price,jdbcType=VARCHAR},
+            </if>
+            <if test="promotion_inventory != null">
+                promotion_inventory=#{promotion_inventory},
+            </if>
+            <if test="pg_seq != null">
+                pg_seq=#{pg_seq},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.promotion_id != null and t.promotion_id != '' ">and promotion_id like
+                    concat('%',#{t.promotion_id},'%')
+                </if>
+                <if test="t.spe_id != null and t.spe_id != '' ">and spe_id like
+                    concat('%',#{t.spe_id},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.pg_id != null  and t.pg_id != '' ">and pg_id =
+                    #{t.pg_id}
+                </if>
+                <if test="t.promotion_id != null  and t.promotion_id != '' ">and promotion_id =
+                    #{t.promotion_id}
+                </if>
+                <if test="t.spe_id != null  and t.spe_id != '' ">and spe_id =
+                    #{t.spe_id}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        pg_id = #{pg_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by pg_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="promotionGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion_goods
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="promotionGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion_goods
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_promotion_goods (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_promotion_goods
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="promotionGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion_goods
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY pg_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_promotion_goods
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_promotion_goods
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="promotionGoodsResult">
+        delete from t_promotion_goods
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="promotionGoodsResult">
+        delete from t_promotion_goods
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="promotionGoodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion_goods
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

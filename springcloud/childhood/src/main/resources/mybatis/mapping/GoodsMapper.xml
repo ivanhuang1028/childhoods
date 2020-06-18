@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.GoodsMapper">
+
+    <resultMap type="com.hl.childhood.module.Goods" id="goodsResult">
+        <result column="goods_id" property="goods_id"/>
+        <result column="classify_id" property="classify_id"/>
+        <result column="brand_id" property="brand_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_price" property="goods_price"/>
+        <result column="image_id" property="image_id"/>
+        <result column="goods_search" property="goods_search"/>
+        <result column="goods_status" property="goods_status"/>
+        <result column="putaway_time" property="putaway_time"/>
+        <result column="createtime" property="createtime"/>
+    </resultMap>
+
+    <sql id="table">
+        t_goods
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            goods_id,
+            classify_id,
+            brand_id,
+            goods_name,
+            goods_price,
+            image_id,
+            goods_search,
+            goods_status,
+            putaway_time,
+            createtime
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="goods_id != null and goods_id != ''">goods_id,</if>
+            <if test="classify_id != null and classify_id != ''">classify_id,</if>
+            <if test="brand_id != null and brand_id != ''">brand_id,</if>
+            <if test="goods_name != null and goods_name != ''">goods_name,</if>
+            <if test="goods_price != null and goods_price != ''">goods_price,</if>
+            <if test="image_id != null and image_id != ''">image_id,</if>
+            <if test="goods_search != null and goods_search != '' ">goods_search,</if>
+            <if test="goods_status != null ">goods_status,</if>
+            <if test="putaway_time != null and putaway_time != ''">putaway_time,</if>
+            createtime,
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="goods_id != null and goods_id != ''">#{goods_id,jdbcType=VARCHAR},</if>
+            <if test="classify_id != null and classify_id != ''">#{classify_id,jdbcType=VARCHAR},</if>
+            <if test="brand_id != null and brand_id != ''">#{brand_id,jdbcType=VARCHAR},</if>
+            <if test="goods_name != null and goods_name != ''">#{goods_name,jdbcType=VARCHAR},</if>
+            <if test="goods_price != null and goods_price != ''">#{goods_price,jdbcType=VARCHAR},</if>
+            <if test="image_id != null and image_id != ''">#{image_id,jdbcType=VARCHAR},</if>
+            <if test="goods_search != null and goods_search != ''">#{goods_search,jdbcType=VARCHAR},</if>
+            <if test="goods_status != null">${goods_status},</if>
+            <if test="putaway_time != null and putaway_time != ''">#{putaway_time,jdbcType=VARCHAR},</if>
+            now(),
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="classify_id != null and classify_id != ''">
+                classify_id=#{classify_id,jdbcType=VARCHAR},
+            </if>
+            <if test="brand_id != null and brand_id != ''">
+                brand_id=#{brand_id,jdbcType=VARCHAR},
+            </if>
+            <if test="goods_name != null and goods_name != ''">
+                goods_name=#{goods_name,jdbcType=VARCHAR},
+            </if>
+            <if test="goods_price != null and goods_price != ''">
+                goods_price=#{goods_price,jdbcType=VARCHAR},
+            </if>
+            <if test="image_id != null and image_id != ''">
+                image_id=#{image_id,jdbcType=VARCHAR},
+            </if>
+            <if test="goods_search != null and goods_search != ''">
+                goods_search=#{goods_search,jdbcType=VARCHAR},
+            </if>
+            <if test="goods_status != null ">
+                goods_status=${goods_status},
+            </if>
+            <if test="putaway_time != null and putaway_time != ''">
+                putaway_time=#{putaway_time,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.classify_id != null and t.classify_id != '' ">and classify_id like
+                    concat('%',#{t.classify_id},'%')
+                </if>
+                <if test="t.brand_id != null   and t.brand_id != '' ">and brand_id like
+                    concat('%',#{t.brand_id},'%')
+                </if>
+                <if test="t.goods_name != null and t.goods_name != '' ">and goods_name like
+                    concat('%',#{t.goods_name},'%')
+                </if>
+                <if test="t.goods_search != null  and t.goods_search != '' ">and goods_search like
+                    concat('%',#{t.goods_search},'%')
+                </if>
+                <if test="t.goods_status != null  ">
+                    and goods_status = ${t.goods_status}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.goods_id != null  and t.goods_id != '' ">and goods_id =
+                    #{t.goods_id}
+                </if>
+                <if test="t.classify_id != null  and t.classify_id != '' ">and classify_id =
+                    #{t.classify_id}
+                </if>
+                <if test="t.brand_id != null  and t.brand_id != '' ">and brand_id =
+                    #{t.brand_id}
+                </if>
+                <if test="t.goods_name != null  and t.goods_name != ''  ">and goods_name =
+                    #{t.goods_name}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        goods_id = #{goods_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by goods_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="goodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="goodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_goods (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_goods
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="goodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY goods_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_goods
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_goods
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="goodsResult">
+        delete from t_goods
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="goodsResult">
+        delete from t_goods
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="goodsResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+    <resultMap type="com.hl.childhood.vo.classify.ClassifysGoodsVO" id="classifysGoodsVO">
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_desc" property="goods_desc"/>
+        <result column="goods_image_link" property="goods_image_link"/>
+        <result column="goods_price" property="goods_price"/>
+    </resultMap>
+
+    <select id="classifysGoods" resultMap="classifysGoodsVO">
+        SELECT tg.goods_id, tg.goods_name, tg.goods_desc,
+        ti.image_remote_link AS 'goods_image_link', tg.goods_price
+        FROM t_goods tg
+        LEFT JOIN t_image ti
+        ON (tg.image_id = ti.image_id)
+        WHERE tg.classify_id = #{classify_id}
+        AND tg.goods_status =2
+        ORDER BY tg.putaway_time DESC
+        LIMIT ${goods_num}
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.goods.GoodsInfoVO" id="goodsInfoVO">
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_desc" property="goods_desc"/>
+        <result column="goods_image_link" property="goods_image_link"/>
+        <result column="goods_price" property="goods_price"/>
+    </resultMap>
+
+    <select id="goodsList" resultMap="goodsInfoVO">
+        SELECT tg.goods_id, ti.image_remote_link as 'goods_image_link', tg.goods_name,
+        tg.goods_status, tg.goods_price
+        FROM t_goods tg
+        INNER JOIN t_classify tc
+        ON (tg.classify_id = tc.classify_id
+        AND tc.shop_id = #{shopId}
+        <if test="key != null  and key != ''  ">
+            AND tg.goods_search LIKE concat('%',#{key},'%')
+        </if>
+        AND tg.goods_status = 2
+        AND tc.is_valid = 2)
+        LEFT JOIN t_image ti
+        ON (tg.image_id = ti.image_id)
+        <if test="sort == 1  ">
+            ORDER BY tg.goods_name
+        </if>
+        <if test="sort == 2  ">
+            ORDER BY tg.goods_price
+        </if>
+        <if test="sort == 3  ">
+            ORDER BY tg.goods_price DESC
+        </if>
+        <if test="sort == 4  ">
+            ORDER BY tg.createtime DESC
+        </if>
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.goods.GoodsVO" id="goodsVO">
+        <result column="goods_id" property="goods_id"/>
+        <result column="classify_id" property="classify_id"/>
+        <result column="classify_name" property="classify_name"/>
+        <result column="brand_id" property="brand_id"/>
+        <result column="brand_name" property="brand_name"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_desc" property="goods_desc"/>
+        <result column="goods_price" property="goods_price"/>
+    </resultMap>
+
+    <select id="goodsOne" resultMap="goodsVO">
+        SELECT tg.goods_id, tc.classify_id, tc.classify_name, tb.brand_id, tb.brand_name,
+        tg.goods_name, tg.goods_desc, tg.goods_price
+        FROM t_goods tg
+        INNER JOIN t_classify tc
+        ON (tg.classify_id = tc.classify_id
+        AND tg.goods_id = #{goods_id})
+        INNER JOIN t_brand tb
+        ON (tg.brand_id = tb.brand_id)
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.goods.GoodsFieldVO" id="goodsFieldVO">
+        <result column="field_id" property="field_id"/>
+        <result column="field_name" property="field_name"/>
+        <result column="value" property="value"/>
+    </resultMap>
+
+    <select id="goodsFileds" resultMap="goodsFieldVO">
+        SELECT tcf.cf_id as 'field_id', tcf.cf_field as 'field_name', tgv.gv_value as 'value'
+        FROM t_classify_field tcf
+        INNER JOIN t_goods tg
+        ON (tcf.classify_id = tg.classify_id
+        AND tg.goods_id = #{goods_id})
+        LEFT JOIN t_goods_value tgv
+        ON (tgv.cf_id = tcf.cf_id AND tgv.goods_id = #{goods_id})
+        ORDER BY tcf.cf_seq
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.goods.GoodsLbtVO" id="goodsLbtVO">
+        <result column="image_id" property="image_id"/>
+        <result column="image_remote_link" property="image_remote_link"/>
+    </resultMap>
+
+    <select id="goodsLbt" resultMap="goodsLbtVO">
+        SELECT ti.image_id, ti.image_remote_link FROM t_goods_lbt tgl
+        INNER JOIN t_image ti
+        ON (tgl.image_id = ti.image_id AND tgl.good_id = #{goods_id} )
+        ORDER BY tgl.lbt_seq
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.goods.GoodsXqtVO" id="goodsXqtVO">
+        <result column="image_id" property="image_id"/>
+        <result column="image_remote_link" property="image_remote_link"/>
+    </resultMap>
+
+    <select id="goodsXqt" resultMap="goodsXqtVO">
+        SELECT ti.image_id, ti.image_remote_link FROM t_goods_xqt tgx
+        INNER JOIN t_image ti
+        ON (tgx.image_id = ti.image_id AND tgx.good_id = #{goods_id})
+        ORDER BY tgx.xqt_seq
+    </select>
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

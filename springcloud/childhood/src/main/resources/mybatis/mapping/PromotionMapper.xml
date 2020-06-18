@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.PromotionMapper">
+
+    <resultMap type="com.hl.childhood.module.Promotion" id="promotionResult">
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="promotion_name" property="promotion_name"/>
+        <result column="image_id" property="image_id"/>
+        <result column="shop_id" property="shop_id"/>
+        <result column="start_time" property="start_time"/>
+        <result column="end_time" property="end_time"/>
+        <result column="is_valid" property="is_valid"/>
+    </resultMap>
+
+    <sql id="table">
+        t_promotion
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            promotion_id,
+            promotion_name,
+            image_id,
+            shop_id,
+            start_time,
+            end_time,
+            is_valid
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="promotion_id != null and promotion_id != ''">promotion_id,</if>
+            <if test="promotion_name != null and promotion_name != ''">promotion_name,</if>
+            <if test="image_id != null and image_id != ''">image_id,</if>
+            <if test="shop_id != null and shop_id != ''">shop_id,</if>
+            <if test="start_time != null and start_time != ''">start_time,</if>
+            <if test="end_time != null and end_time != ''">end_time,</if>
+            <if test="is_valid != null ">is_valid,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="promotion_id != null and promotion_id != ''">#{promotion_id,jdbcType=VARCHAR},</if>
+            <if test="promotion_name != null and promotion_name != ''">#{promotion_name,jdbcType=VARCHAR},</if>
+            <if test="image_id != null and image_id != ''">#{image_id,jdbcType=VARCHAR},</if>
+            <if test="shop_id != null and shop_id != ''">#{shop_id,jdbcType=VARCHAR},</if>
+            <if test="start_time != null and start_time != ''">#{start_time,jdbcType=VARCHAR},</if>
+            <if test="end_time != null and end_time != ''">#{end_time,jdbcType=VARCHAR},</if>
+            <if test="is_valid != null">#{is_valid},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="promotion_name != null">
+                promotion_name=#{promotion_name,jdbcType=VARCHAR},
+            </if>
+            <if test="image_id != null and image_id != ''">
+                image_id=#{image_id,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_id != null and shop_id != ''">
+                shop_id=#{shop_id,jdbcType=VARCHAR},
+            </if>
+            <if test="is_valid != null">
+                is_valid=#{is_valid},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.promotion_name != null and t.promotion_name != '' ">and promotion_name like
+                    concat('%',#{t.promotion_name},'%')
+                </if>
+                <if test="t.shop_id != null and t.shop_id != '' ">and shop_id like
+                    concat('%',#{t.shop_id},'%')
+                </if>
+                <if test="t.is_valid != null   and t.is_valid != '' ">and is_valid like
+                    concat('%',#{t.is_valid},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.promotion_id != null  and t.promotion_id != '' ">and promotion_id =
+                    #{t.promotion_id}
+                </if>
+                <if test="t.promotion_name != null  and t.promotion_name != '' ">and promotion_name =
+                    #{t.promotion_name}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        promotion_id = #{promotion_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by promotion_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="promotionResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="promotionResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_promotion (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_promotion
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="promotionResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY promotion_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_promotion
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_promotion
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="promotionResult">
+        delete from t_promotion
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="promotionResult">
+        delete from t_promotion
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="promotionResult">
+        select
+        <include refid="tableColumns"/>
+        from t_promotion
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+    <resultMap type="com.hl.childhood.vo.promotion.PromotionLbtVO" id="promotionLbtVO">
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="image_remote_link" property="image_remote_link"/>
+        <result column="promotion_seq" property="promotion_seq"/>
+    </resultMap>
+
+    <select id="homepagesLbt" resultMap="promotionLbtVO">
+        SELECT tp.promotion_id, ti.image_remote_link, tp.promotion_seq
+        FROM t_promotion tp
+        INNER JOIN t_image ti
+        ON (tp.image_id = ti.image_id )
+        WHERE tp.shop_id = #{shopId} AND tp.promotion_type = 2
+        AND (tp.end_time IS NULL OR tp.end_time &gt; NOW() )
+        AND tp.start_time &lt; NOW()
+        AND tp.is_valid = 1
+        ORDER BY tp.promotion_seq
+        LIMIT 5
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.promotion.PromotionSeckillVO" id="promotionSeckillVO">
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="image_remote_link" property="image_remote_link"/>
+        <result column="start_time" property="start_time"/>
+        <result column="end_time" property="end_time"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_desc" property="goods_desc"/>
+        <result column="promotion_used" property="promotion_used"/>
+        <result column="goods_price" property="goods_price"/>
+        <result column="promotion_price" property="promotion_price"/>
+        <result column="seq" property="seq"/>
+    </resultMap>
+
+    <select id="promotionsSeckill" resultMap="promotionSeckillVO">
+        SELECT tp.promotion_id, ti.image_remote_link AS 'image_remote_link',
+        tp.start_time, tp.end_time, tg.goods_id, tg.goods_name, tg.goods_desc,
+        result1.promotion_used, tpg.promotion_price, tg.goods_price, tpg.homepage_seq AS 'seq'
+        FROM t_promotion_goods tpg
+        LEFT JOIN t_image ti
+        ON (tpg.image_id AND ti.image_id)
+        INNER JOIN t_promotion tp
+        ON (tpg.promotion_id = tp.promotion_id AND tp.shop_id = #{shopId})
+        INNER JOIN t_goods tg
+        ON (tpg.goods_id = tg.goods_id AND tg.goods_status = 2)
+        INNER JOIN (
+            SELECT tpg.goods_id, SUM(tpgs.promotion_used) AS 'promotion_used'
+            FROM t_promotion_goods_spe tpgs
+            INNER JOIN t_promotion_goods tpg
+            ON (tpgs.pg_id = tpg.pg_id)
+            INNER JOIN t_promotion tp
+            ON (tp.promotion_id = tpg.promotion_id AND tp.shop_id = #{shopId})
+            GROUP BY tpg.goods_id
+        ) result1
+        ON (tg.goods_id = result1.goods_id)
+        ORDER BY tpg.homepage_seq
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.promotion.PromotionInfoVO" id="promotionInfoVO">
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="promotion_name" property="promotion_name"/>
+        <result column="promotion_image_link" property="promotion_image_link"/>
+    </resultMap>
+
+    <select id="promotionsOne" resultMap="promotionInfoVO">
+        SELECT tp.promotion_id, tp.promotion_name,
+        ti.image_remote_link AS 'promotion_image_link'
+        FROM t_promotion tp
+        LEFT JOIN t_image ti
+        ON (tp.image_id = ti.image_id )
+        WHERE tp.promotion_id = #{promotion_id}
+        AND tp.is_valid = 1
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.promotion.PromotionGoodsInfoVO" id="promotionGoodsInfoVO">
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_image_link" property="goods_image_link"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_desc" property="goods_desc"/>
+        <result column="goods_price" property="goods_price"/>
+    </resultMap>
+
+    <select id="promotionsGoods" resultMap="promotionGoodsInfoVO">
+        SELECT tg.goods_id, tg.goods_name, tg.goods_desc, tpg.promotion_price as 'goods_price',
+        CASE WHEN ti.image_remote_link IS NULL THEN ti1.image_remote_link
+        ELSE ti.image_remote_link END AS 'goods_image_link'
+        FROM t_promotion_goods tpg
+        INNER JOIN t_goods tg
+        ON (tpg.goods_id = tg.goods_id
+        AND tpg.promotion_id = #{promotion_id} )
+        LEFT JOIN t_image ti
+        ON (tpg.image_id = ti.image_id)
+        LEFT JOIN t_image ti1
+        ON (tg.image_id = ti1.image_id )
+        ORDER BY tpg.seq
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.promotion.PromotionVO" id="promotionVO">
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="promotion_name" property="promotion_name"/>
+        <result column="start_time" property="start_time"/>
+        <result column="end_time" property="end_time"/>
+        <result column="image_id" property="image_id"/>
+        <result column="image_remote_link" property="image_remote_link"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="promotion_price" property="promotion_price"/>
+    </resultMap>
+
+    <select id="promotionOne" resultMap="promotionVO">
+        SELECT tp.promotion_id, tp.promotion_name, tp.start_time,
+        tp.end_time, ti.image_id, ti.image_remote_link,
+        tpg.goods_id, tg.goods_name, tpg.promotion_price
+        FROM t_promotion_goods tpg
+        INNER JOIN t_promotion tp
+        ON (tpg.promotion_id = tp.promotion_id
+        AND tpg.goods_id = #{goods_id}
+        AND tpg.promotion_id = #{promotion_id})
+        INNER JOIN t_goods tg
+        ON (tpg.goods_id = tg.goods_id AND tg.goods_id = #{goods_id} )
+        LEFT JOIN t_image ti
+        ON (tp.image_id = ti.image_id)
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.promotion.CouponVO" id="couponVO">
+        <result column="coupon_id" property="coupon_id"/>
+        <result column="coupon_title" property="coupon_title"/>
+        <result column="coupon_type" property="coupon_type"/>
+        <result column="coupon_amount" property="coupon_amount"/>
+        <result column="used_amount" property="used_amount"/>
+        <result column="used_discount" property="used_discount"/>
+        <result column="valid_start_time" property="valid_start_time"/>
+        <result column="valid_end_time" property="valid_end_time"/>
+        <result column="valid_days" property="valid_days"/>
+    </resultMap>
+
+    <select id="getCoupons" resultMap="couponVO">
+        SELECT tc.coupon_id, tc.coupon_title, tc.coupon_type, tc.coupon_amount,
+        tc.used_amount, tc.used_discount, tc.valid_start_time,
+        tc.valid_end_time, tc.valid_days
+        FROM t_coupon tc
+        WHERE tc.promotion_id = #{promotion_id} AND tc.coupon_status = 1
+        ORDER BY tc.create_time DESC
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.promotion.SpecVO" id="specVO">
+        <result column="spe_id" property="spe_id"/>
+        <result column="spe_name" property="spe_name"/>
+        <result column="spe_desc" property="spe_desc"/>
+        <result column="spe_promotion_price" property="spe_promotion_price"/>
+        <result column="spe_promotion_inventory" property="spe_promotion_inventory"/>
+        <result column="spe_icon" property="spe_icon"/>
+    </resultMap>
+
+    <select id="getSpes" resultMap="specVO">
+        SELECT tgs.spe_id, tgs.spe_name, tgs.spe_desc,
+        tpgs.promotion_price AS 'spe_promotion_price', tpgs.promotion_inventory AS 'spe_promotion_inventory',
+        tgs.spe_icon FROM t_promotion_goods_spe tpgs
+        INNER JOIN t_promotion_goods tpg
+        ON(tpgs.pg_id = tpg.pg_id AND tpg.promotion_id = #{promotion_id} AND tpg.goods_id = #{goods_id})
+        INNER JOIN t_goods_spe tgs
+        ON (tpgs.spe_id = tgs.spe_id)
+        ORDER BY tgs.spe_seq
+    </select>
+
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

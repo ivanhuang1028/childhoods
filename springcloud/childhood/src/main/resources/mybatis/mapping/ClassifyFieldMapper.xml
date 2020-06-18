@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.ClassifyFieldMapper">
+
+    <resultMap type="com.hl.childhood.module.ClassifyField" id="classifyFieldResult">
+        <result column="cf_id" property="cf_id"/>
+        <result column="classify_id" property="classify_id"/>
+        <result column="cf_field" property="cf_field"/>
+        <result column="cf_seq" property="cf_seq"/>
+    </resultMap>
+
+    <sql id="table">
+        t_classify_field
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            cf_id,
+            classify_id,
+            cf_field,
+            cf_seq
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="cf_id != null and cf_id != ''">cf_id,</if>
+            <if test="classify_id != null and classify_id != ''">classify_id,</if>
+            <if test="cf_field != null and cf_field != ''">cf_field,</if>
+            <if test="cf_seq != null ">cf_seq,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="cf_id != null and cf_id != ''">#{cf_id,jdbcType=VARCHAR},</if>
+            <if test="classify_id != null and classify_id != ''">#{classify_id,jdbcType=VARCHAR},</if>
+            <if test="cf_field != null and cf_field != ''">#{cf_field,jdbcType=VARCHAR},</if>
+            <if test="cf_seq != null">#{cf_seq},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="classify_id != null">
+                classify_id=#{classify_id,jdbcType=VARCHAR},
+            </if>
+            <if test="cf_field != null and cf_field != ''">
+                cf_field=#{cf_field,jdbcType=VARCHAR},
+            </if>
+            <if test="cf_seq != null">
+                cf_seq=#{cf_seq},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.classify_id != null and t.classify_id != '' ">and classify_id like
+                    concat('%',#{t.classify_id},'%')
+                </if>
+                <if test="t.cf_field != null   and t.cf_field != '' ">and cf_field like
+                    concat('%',#{t.cf_field},'%')
+                </if>
+                <if test="t.cf_seq != null   ">and cf_seq like
+                    concat('%',#{t.cf_seq},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.cf_id != null  and t.cf_id != '' ">and cf_id =
+                    #{t.cf_id}
+                </if>
+                <if test="t.classify_id != null  and t.classify_id != '' ">and classify_id =
+                    #{t.classify_id}
+                </if>
+                <if test="t.cf_field != null  and t.cf_field != '' ">and cf_field =
+                    #{t.cf_field}
+                </if>
+                <if test="t.cf_seq != null  ">and cf_seq =
+                    #{t.cf_seq}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        cf_id = #{cf_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by cf_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="classifyFieldResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify_field
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="classifyFieldResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify_field
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_classify_field (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_classify_field
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="classifyFieldResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify_field
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY cf_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_classify_field
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_classify_field
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="classifyFieldResult">
+        delete from t_classify_field
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="classifyFieldResult">
+        delete from t_classify_field
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="classifyFieldResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify_field
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

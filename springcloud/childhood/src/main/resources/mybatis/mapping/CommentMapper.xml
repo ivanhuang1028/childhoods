@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.CommentMapper">
+
+    <resultMap type="com.hl.childhood.module.Comment" id="commentResult">
+        <result column="comment_id" property="comment_id"/>
+        <result column="order_id" property="order_id"/>
+        <result column="comment_type" property="comment_type"/>
+        <result column="star" property="star"/>
+        <result column="comment" property="comment"/>
+        <result column="comment_pid" property="comment_pid"/>
+        <result column="comment_pids" property="comment_pids"/>
+        <result column="from_merchant" property="from_merchant"/>
+        <result column="create_time" property="create_time"/>
+    </resultMap>
+
+    <sql id="table">
+        t_comment
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            comment_id,
+            order_id,
+            comment_type,
+            star,
+            comment,
+            comment_pid,
+            comment_pids,
+            from_merchant,
+            create_time
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="comment_id != null and comment_id != ''">comment_id,</if>
+            <if test="order_id != null and order_id != ''">order_id,</if>
+            <if test="comment_type != null and comment_type != ''">comment_type,</if>
+            <if test="star != null ">star,</if>
+            <if test="comment != null and comment != ''">comment,</if>
+            <if test="comment_pid != null and comment_pid != ''">comment_pid,</if>
+            <if test="comment_pids != null and comment_pids != '' ">comment_pids,</if>
+            <if test="from_merchant != null ">from_merchant,</if>
+            create_time
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="comment_id != null and comment_id != ''">#{comment_id,jdbcType=VARCHAR},</if>
+            <if test="order_id != null and order_id != ''">#{order_id,jdbcType=VARCHAR},</if>
+            <if test="comment_type != null and comment_type != ''">#{comment_type,jdbcType=VARCHAR},</if>
+            <if test="star != null ">#{star},</if>
+            <if test="comment != null and comment != ''">#{comment,jdbcType=VARCHAR},</if>
+            <if test="comment_pid != null and comment_pid != ''">#{comment_pid,jdbcType=VARCHAR},</if>
+            <if test="comment_pids != null and comment_pids != '' ">#{comment_pids,jdbcType=VARCHAR},</if>
+            <if test="from_merchant != null ">#{from_merchant},</if>
+            now(),
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="order_id != null">
+                order_id=#{order_id,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_type != null and comment_type != ''">
+                comment_type=#{comment_type,jdbcType=VARCHAR},
+            </if>
+            <if test="star != null and star != ''">
+                star=#{star,jdbcType=VARCHAR},
+            </if>
+            <if test="comment != null and comment != ''">
+                comment=#{comment,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_pid != null and comment_pid != ''">
+                comment_pid=#{comment_pid,jdbcType=VARCHAR},
+            </if>
+            <if test="comment_pids != null">
+                comment_pids=#{comment_pids},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.order_id != null and t.order_id != '' ">and order_id like
+                    concat('%',#{t.order_id},'%')
+                </if>
+                <if test="t.comment_type != null   and t.comment_type != '' ">and comment_type like
+                    concat('%',#{t.comment_type},'%')
+                </if>
+                <if test="t.star != null ">and star like
+                    concat('%',#{t.star},'%')
+                </if>
+                <if test="t.comment_pid != null and t.comment_pid != ''  ">and comment_pid like
+                    concat('%',#{t.comment_pid},'%')
+                </if>
+                <if test="t.comment_pids != null   ">and comment_pids like
+                    concat('%',#{t.comment_pids},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.comment_id != null  and t.comment_id != '' ">and comment_id =
+                    #{t.comment_id}
+                </if>
+                <if test="t.order_id != null  and t.order_id != '' ">and order_id =
+                    #{t.order_id}
+                </if>
+                <if test="t.comment_type != null  and t.comment_type != '' ">and comment_type =
+                    #{t.comment_type}
+                </if>
+                <if test="t.star != null   ">and star =
+                    ${t.star}
+                </if>
+                <if test="t.comment_pid != null  and t.comment_pid != '' ">and comment_pid =
+                    #{t.comment_pid}
+                </if>
+                <if test="t.from_merchant != null   ">and from_merchant =
+                    ${t.from_merchant}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        comment_id = #{comment_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by comment_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="commentResult">
+        select
+        <include refid="tableColumns"/>
+        from t_comment
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="commentResult">
+        select
+        <include refid="tableColumns"/>
+        from t_comment
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_comment (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_comment
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="commentResult">
+        select
+        <include refid="tableColumns"/>
+        from t_comment
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY comment_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_comment
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_comment
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="commentResult">
+        delete from t_comment
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="commentResult">
+        delete from t_comment
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="commentResult">
+        select
+        <include refid="tableColumns"/>
+        from t_comment
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+    <resultMap type="com.hl.childhood.vo.comment.CommentTypeVO" id="commentTypeVO">
+        <result column="comment_type_id" property="comment_type_id"/>
+        <result column="comment_type_name" property="comment_type_name"/>
+        <result column="comment_type_num" property="comment_type_num"/>
+    </resultMap>
+
+    <select id="countCommentTypes" resultMap="commentTypeVO">
+        SELECT result1.comment_type_id, td.dic_value AS 'comment_type_name',
+        result1.comment_type_num
+         FROM (
+            SELECT tc.comment_type AS 'comment_type_id', COUNT(1) AS 'comment_type_num' FROM t_comment tc
+            WHERE tc.goods_id = #{goods_id}
+            GROUP BY tc.comment_type
+        ) result1
+        INNER JOIN t_dictionary td
+        ON (result1.comment_type_id = td.dic_id)
+        ORDER BY td.dic_seq
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.comment.CommentVO" id="commentVO">
+        <result column="comment_id" property="comment_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="user_name" property="user_name"/>
+        <result column="user_icon" property="user_icon"/>
+        <result column="star" property="star"/>
+        <result column="comment" property="comment"/>
+        <result column="from_merchant" property="from_merchant"/>
+    </resultMap>
+
+    <select id="commentsList" resultMap="commentVO">
+        SELECT tc.comment_id, tu.user_id, tu.user_name,
+        tu.user_icon, tc.star, tc.comment, tc.from_merchant
+        FROM t_comment tc
+        INNER JOIN t_order tor
+        ON (tc.order_id = tor.order_id AND tc.goods_id = #{goods_id} AND tc.comment_pid = 0)
+        INNER JOIN t_user tu
+        ON (tor.user_id = tu.user_id)
+        ORDER BY tc.create_time DESC
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.comment.CommentImagesVO" id="commentImagesVO">
+        <result column="image_id" property="image_id"/>
+        <result column="image_remote_link" property="image_remote_link"/>
+    </resultMap>
+
+    <select id="getCommentImages" resultMap="commentImagesVO">
+        SELECT ti.image_id, ti.image_remote_link  FROM t_comment_images tci
+        INNER JOIN t_image ti
+        ON (tci.image_id = ti.image_id AND tci.comment_id = #{comment_id})
+        ORDER BY tci.create_time DESC
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.comment.CommentFeedBackVO" id="commentFeedBackVO">
+        <result column="comment_id" property="comment_id"/>
+        <result column="comment" property="comment"/>
+        <result column="from_merchant" property="from_merchant"/>
+    </resultMap>
+
+    <select id="getCommentFeedbacks" resultMap="commentFeedBackVO">
+        SELECT tc.comment_id, tc.comment, tc.from_merchant
+        FROM t_comment tc
+        WHERE tc.comment_pid = #{comment_id}
+        ORDER BY tc.create_time
+    </select>
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

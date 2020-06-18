@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c75ef331-bbd8-4794-afde-2965daa37531" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="D:/sofeware/use/apache-maven-3.2.1" />
+        <option name="userSettingsFile" value="D:\sofeware\use\apache-maven-3.2.1\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+    <option name="enabledProfiles">
+      <list>
+        <option value="dev" />
+        <option value="JDK-1.8" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1cqxgfmUAlkT1QjUv8q2EWMJUQu" />
+  <component name="PropertiesComponent">
+    <property name="RequestMappingsPanelOrder0" value="0" />
+    <property name="RequestMappingsPanelOrder1" value="1" />
+    <property name="RequestMappingsPanelOrder2" value="2" />
+    <property name="RequestMappingsPanelWidth0" value="75" />
+    <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RequestMappingsPanelWidth2" value="75" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/childhood/src/main/resources/mybatis/mapping" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.hl.childhood.controller" />
+      <recent name="com.hl.childhood.vo.promotion" />
+      <recent name="com.hl.childhood.vo.comment" />
+      <recent name="com.hl.childhood.vo.goods" />
+      <recent name="com.hl.childhood.vo.classify" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\files\projects\newWorkPlace20170804\childhood\springcloud\childhood\src\main\resources\mybatis\mapping" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.ChildhoodApplication">
+    <configuration name="JwtHelper" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hl.common.util.JwtHelper" />
+      <module name="common" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hl.common.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UUIDGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hl.common.util.UUIDGenerator" />
+      <module name="common" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hl.common.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ChildhoodApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="childhood" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.hl.childhood.ChildhoodApplication" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.UUIDGenerator" />
+      <item itemvalue="Application.JwtHelper" />
+      <item itemvalue="Spring Boot.ChildhoodApplication" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.UUIDGenerator" />
+        <item itemvalue="Application.JwtHelper" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c75ef331-bbd8-4794-afde-2965daa37531" name="Default Changelist" comment="" />
+      <created>1591270037128</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1591270037128</updated>
+      <workItem from="1591270078850" duration="423000" />
+      <workItem from="1591270510590" duration="3827000" />
+      <workItem from="1591280382079" duration="5687000" />
+      <workItem from="1591319203190" duration="1210000" />
+      <workItem from="1591414397811" duration="13621000" />
+      <workItem from="1591485177604" duration="12657000" />
+      <workItem from="1592043703179" duration="607000" />
+      <workItem from="1592099133911" duration="12193000" />
+      <workItem from="1592184140580" duration="2432000" />
+      <workItem from="1592373035386" duration="6597000" />
+      <workItem from="1592442699241" duration="23184000" />
+      <workItem from="1592501572669" duration="12334000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+</project>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.TgAddressMapper">
+
+    <resultMap type="com.hl.childhood.module.TgAddress" id="tgAddressResult">
+        <result column="tga_id" property="tga_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="tg_name" property="tg_name"/>
+        <result column="tg_phone" property="tg_phone"/>
+        <result column="tg_ssq" property="tg_ssq"/>
+        <result column="tg_address" property="tg_address"/>
+        <result column="tg_num" property="tg_num"/>
+        <result column="is_default" property="is_default"/>
+        <result column="createtime" property="createtime"/>
+    </resultMap>
+
+    <sql id="table">
+        t_tg_address
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            tga_id,
+            user_id,
+            tg_name,
+            tg_phone,
+            tg_ssq,
+            tg_address,
+            tg_num,
+            is_default,
+            createtime
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="tga_id != null and tga_id != ''">tga_id,</if>
+            <if test="user_id != null and user_id != ''">user_id,</if>
+            <if test="tg_name != null and tg_name != ''">tg_name,</if>
+            <if test="tg_phone != null and tg_phone != ''">tg_phone,</if>
+            <if test="tg_ssq != null and tg_ssq != '' ">tg_ssq,</if>
+            <if test="tg_address != null and tg_address != '' ">tg_address,</if>
+            <if test="tg_num != null and tg_num != ''">tg_num,</if>
+            <if test="is_default != null ">is_default,</if>
+            create_time,
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="tga_id != null and tga_id != ''">#{tga_id,jdbcType=VARCHAR},</if>
+            <if test="user_id != null and user_id != ''">#{user_id,jdbcType=VARCHAR},</if>
+            <if test="tg_name != null and tg_name != ''">#{tg_name,jdbcType=VARCHAR},</if>
+            <if test="tg_phone != null and tg_phone != ''">#{tg_phone,jdbcType=VARCHAR},</if>
+            <if test="tg_ssq != null and tg_ssq != ''">#{tg_ssq,jdbcType=VARCHAR},</if>
+            <if test="tg_address != null and tg_address != ''">${tg_address,jdbcType=VARCHAR},</if>
+            <if test="tg_num != null and tg_num != ''">#{tg_num,jdbcType=VARCHAR},</if>
+            <if test="is_default != null ">${is_default},</if>
+            now(),
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="user_id != null">
+                user_id=#{user_id,jdbcType=VARCHAR},
+            </if>
+            <if test="tg_name != null and tg_name != ''">
+                tg_name=#{tg_name,jdbcType=VARCHAR},
+            </if>
+            <if test="tg_phone != null and tg_phone != ''">
+                tg_phone=#{tg_phone,jdbcType=VARCHAR},
+            </if>
+            <if test="tg_ssq != null and tg_ssq != ''">
+                tg_ssq=#{tg_ssq,jdbcType=VARCHAR},
+            </if>
+            <if test="tg_address != null and tg_address != ''">
+                tg_address=#{tg_address,jdbcType=VARCHAR},
+            </if>
+            <if test="tg_num != null and tg_num != ''">
+                tg_num=#{tg_num,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null">
+                createtime=#{createtime},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.user_id != null and t.user_id != '' ">and user_id like
+                    concat('%',#{t.user_id},'%')
+                </if>
+                <if test="t.is_default != null   ">and is_default = ${t.is_default}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.tga_id != null  and t.tga_id != '' ">and tga_id =
+                    #{t.tga_id}
+                </if>
+                <if test="t.user_id != null  and t.user_id != '' ">and user_id =
+                    #{t.user_id}
+                </if>
+                <if test="t.tg_phone != null  and t.tg_phone != ''  ">and tg_phone =
+                    #{t.tg_phone}
+                </if>
+                <if test="t.tg_num != null  ">and tg_num =
+                    #{t.tg_num}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        tga_id = #{tga_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by tga_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="tgAddressResult">
+        select
+        <include refid="tableColumns"/>
+        from t_tg_address
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="tgAddressResult">
+        select
+        <include refid="tableColumns"/>
+        from t_tg_address
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_tg_address (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_tg_address
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="tgAddressResult">
+        select
+        <include refid="tableColumns"/>
+        from t_tg_address
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY tga_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_tg_address
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_tg_address
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="tgAddressResult">
+        delete from t_tg_address
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="tgAddressResult">
+        delete from t_tg_address
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="tgAddressResult">
+        select
+        <include refid="tableColumns"/>
+        from t_tg_address
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.ClassifyMapper">
+
+    <resultMap type="com.hl.childhood.module.Classify" id="classifyResult">
+        <result column="classify_id" property="classify_id"/>
+        <result column="classify_name" property="classify_name"/>
+        <result column="classify_icon" property="classify_icon"/>
+        <result column="shop_id" property="shop_id"/>
+        <result column="image_id" property="image_id"/>
+        <result column="merchant_qualification" property="merchant_qualification"/>
+        <result column="is_valid" property="is_valid"/>
+    </resultMap>
+
+    <sql id="table">
+        t_classify
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            classify_id,
+            classify_name,
+            classify_icon,
+            shop_id,
+            image_id,
+            merchant_qualification,
+            is_valid
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="classify_id != null and classify_id != ''">classify_id,</if>
+            <if test="classify_name != null and classify_name != ''">classify_name,</if>
+            <if test="classify_icon != null and classify_icon != ''">classify_icon,</if>
+            <if test="shop_id != null and shop_id != ''">shop_id,</if>
+            <if test="image_id != null and image_id != ''">image_id,</if>
+            <if test="merchant_qualification != null and merchant_qualification != ''">merchant_qualification,</if>
+            <if test="is_valid != null ">is_valid,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="classify_id != null and classify_id != ''">#{classify_id,jdbcType=VARCHAR},</if>
+            <if test="classify_name != null and classify_name != ''">#{classify_name,jdbcType=VARCHAR},</if>
+            <if test="classify_icon != null and classify_icon != ''">#{classify_icon,jdbcType=VARCHAR},</if>
+            <if test="shop_id != null and shop_id != ''">#{shop_id,jdbcType=VARCHAR},</if>
+            <if test="image_id != null and image_id != ''">#{image_id,jdbcType=VARCHAR},</if>
+            <if test="merchant_qualification != null and merchant_qualification != ''">#{merchant_qualification,jdbcType=VARCHAR},</if>
+            <if test="is_valid != null">#{is_valid},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="classify_name != null">
+                classify_name=#{classify_name,jdbcType=VARCHAR},
+            </if>
+            <if test="classify_icon != null and classify_icon != ''">
+                classify_icon=#{classify_icon,jdbcType=VARCHAR},
+            </if>
+            <if test="shop_id != null and shop_id != ''">
+                shop_id=#{shop_id,jdbcType=VARCHAR},
+            </if>
+            <if test="image_id != null and image_id != ''">
+                image_id=#{image_id,jdbcType=VARCHAR},
+            </if>
+            <if test="merchant_qualification != null and merchant_qualification != ''">
+                merchant_qualification=#{merchant_qualification,jdbcType=VARCHAR},
+            </if>
+            <if test="is_valid != null">
+                is_valid=#{is_valid},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.classify_name != null and t.classify_name != '' ">and classify_name like
+                    concat('%',#{t.classify_name},'%')
+                </if>
+                <if test="t.classify_icon != null   and t.classify_icon != '' ">and classify_icon like
+                    concat('%',#{t.classify_icon},'%')
+                </if>
+                <if test="t.shop_id != null and t.shop_id != '' ">and shop_id like
+                    concat('%',#{t.shop_id},'%')
+                </if>
+                <if test="t.is_valid != null   ">and is_valid like
+                    concat('%',#{t.is_valid},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.classify_id != null  and t.classify_id != '' ">and classify_id =
+                    #{t.classify_id}
+                </if>
+                <if test="t.classify_name != null  and t.classify_name != '' ">and classify_name =
+                    #{t.classify_name}
+                </if>
+                <if test="t.classify_icon != null  and t.classify_icon != '' ">and classify_icon =
+                    #{t.classify_icon}
+                </if>
+                <if test="t.shop_id != null  and t.shop_id != ''  ">and shop_id =
+                    #{t.shop_id}
+                </if>
+                <if test="t.is_valid != null  ">and is_valid =
+                    #{t.is_valid}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        classify_id = #{classify_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by classify_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="classifyResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="classifyResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_classify (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_classify
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="classifyResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY classify_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_classify
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_classify
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="classifyResult">
+        delete from t_classify
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="classifyResult">
+        delete from t_classify
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="classifyResult">
+        select
+        <include refid="tableColumns"/>
+        from t_classify
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <resultMap type="com.hl.childhood.vo.classify.ClassifysGridVO" id="classifysGridVO">
+        <result column="classify_id" property="classify_id"/>
+        <result column="classify_icon" property="classify_icon"/>
+        <result column="seq" property="seq"/>
+    </resultMap>
+
+    <select id="classifysGrid" resultMap="classifysGridVO">
+        SELECT tc.classify_id, tc.classify_icon, tc.seq
+        FROM t_classify tc
+        WHERE tc.is_valid = 2
+        AND tc.shop_id = #{shopId}
+        ORDER BY tc.seq
+        LIMIT 6
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.classify.ClassifysListVO" id="classifysListVO">
+        <result column="classify_id" property="classify_id"/>
+        <result column="classify_name" property="classify_name"/>
+        <result column="classify_icon" property="classify_icon"/>
+    </resultMap>
+
+    <select id="classifysList" resultMap="classifysListVO">
+        SELECT tc.classify_id, tc.classify_name, tc.classify_icon
+        FROM t_classify tc
+        WHERE tc.is_valid = 2
+        AND tc.shop_id = #{shopId}
+        ORDER BY tc.seq
+        LIMIT ${classifys_num}
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.classify.ClassifysGoodsInfoVO" id="classifysGoodsInfoVO">
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_image_link" property="goods_image_link"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_desc" property="goods_desc"/>
+        <result column="goods_price" property="goods_price"/>
+    </resultMap>
+
+    <select id="classifysGoods" resultMap="classifysGoodsInfoVO">
+        SELECT tg.goods_id, tg.goods_name, tg.goods_desc,
+        tg.goods_price, ti.image_remote_link AS 'goods_image_link'
+        FROM t_goods tg
+        LEFT JOIN t_image ti
+        ON (tg.image_id = ti.image_id)
+        WHERE tg.classify_id = #{classify_id}
+        AND tg.goods_status = 2
+        <if test="sort == 1  ">
+            ORDER BY tg.goods_name
+        </if>
+        <if test="sort == 2  ">
+            ORDER BY tg.goods_price
+        </if>
+        <if test="sort == 3  ">
+            ORDER BY tg.goods_price DESC
+        </if>
+        <if test="sort == 4  ">
+            ORDER BY tg.createtime DESC
+        </if>
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.classify.ClassifysVO" id="classifysVO">
+        <result column="classify_id" property="classify_id"/>
+        <result column="classify_name" property="classify_name"/>
+        <result column="classify_image_link" property="classify_image_link"/>
+    </resultMap>
+
+    <select id="classifysInfo" resultMap="classifysVO">
+        SELECT tc.classify_id, tc.classify_name, ti.image_remote_link AS 'classify_image_link'
+        FROM t_classify tc
+        LEFT JOIN t_image ti
+        ON (tc.image_id = ti.image_id)
+        WHERE tc.is_valid = 2
+        AND tc.shop_id = #{shopId}
+        ORDER BY tc.seq
+    </select>
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="childhood:war">
+    <output-path>$PROJECT_DIR$/childhood/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>childhood</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="childhood-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="childhood:war exploded" />
+    </root>
+  </artifact>
+</component>

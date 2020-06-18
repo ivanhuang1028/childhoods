@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.GoodsLbtMapper">
+
+    <resultMap type="com.hl.childhood.module.GoodsLbt" id="goodsLbtResult">
+        <result column="lbt_id" property="lbt_id"/>
+        <result column="good_id" property="good_id"/>
+        <result column="image_id" property="image_id"/>
+        <result column="lbt_seq" property="lbt_seq"/>
+    </resultMap>
+
+    <sql id="table">
+        t_goods_lbt
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            lbt_id,
+            good_id,
+            image_id,
+            lbt_seq
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="lbt_id != null and lbt_id != ''">lbt_id,</if>
+            <if test="good_id != null and good_id != ''">good_id,</if>
+            <if test="image_id != null and image_id != ''">image_id,</if>
+            <if test="lbt_seq != null ">lbt_seq,</if>
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="lbt_id != null and lbt_id != ''">#{lbt_id,jdbcType=VARCHAR},</if>
+            <if test="good_id != null and good_id != ''">#{good_id,jdbcType=VARCHAR},</if>
+            <if test="image_id != null and image_id != ''">#{image_id,jdbcType=VARCHAR},</if>
+            <if test="lbt_seq != null">#{lbt_seq},</if>
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="good_id != null">
+                good_id=#{good_id,jdbcType=VARCHAR},
+            </if>
+            <if test="image_id != null and image_id != ''">
+                image_id=#{image_id,jdbcType=VARCHAR},
+            </if>
+            <if test="lbt_seq != null">
+                lbt_seq=#{lbt_seq},
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.good_id != null and t.good_id != '' ">and good_id like
+                    concat('%',#{t.good_id},'%')
+                </if>
+                <if test="t.image_id != null   and t.image_id != '' ">and image_id like
+                    concat('%',#{t.image_id},'%')
+                </if>
+                <if test="t.lbt_seq != null   ">and lbt_seq like
+                    concat('%',#{t.lbt_seq},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.lbt_id != null  and t.lbt_id != '' ">and lbt_id =
+                    #{t.lbt_id}
+                </if>
+                <if test="t.good_id != null  and t.good_id != '' ">and good_id =
+                    #{t.good_id}
+                </if>
+                <if test="t.image_id != null  and t.image_id != '' ">and image_id =
+                    #{t.image_id}
+                </if>
+                <if test="t.lbt_seq != null  ">and lbt_seq =
+                    #{t.lbt_seq}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        lbt_id = #{lbt_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by lbt_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="goodsLbtResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods_lbt
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="goodsLbtResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods_lbt
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_goods_lbt (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_goods_lbt
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="goodsLbtResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods_lbt
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY lbt_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_goods_lbt
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_goods_lbt
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="goodsLbtResult">
+        delete from t_goods_lbt
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="goodsLbtResult">
+        delete from t_goods_lbt
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="goodsLbtResult">
+        select
+        <include refid="tableColumns"/>
+        from t_goods_lbt
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>

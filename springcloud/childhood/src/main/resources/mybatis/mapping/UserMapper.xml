@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+Copyright (c) 2016 by ivan.huang all rights reserved  
+*********************************************** 
+         符号转义说明
+    &lt;          < 
+    &gt;          >  
+    &lt;&gt;     <>
+    &amp;        & 
+    &apos;       '
+    &quot;       "
+  <![CDATA[ 这里写你的SQL或者符号 ]]> 
+ -->
+<mapper namespace="com.hl.childhood.mapper.UserMapper">
+
+    <resultMap type="com.hl.childhood.module.User" id="userResult">
+        <result column="user_id" property="user_id"/>
+        <result column="user_name" property="user_name"/>
+        <result column="user_icon" property="user_icon"/>
+        <result column="user_phone" property="user_phone"/>
+        <result column="user_sex" property="user_sex"/>
+        <result column="user_birthday" property="user_birthday"/>
+        <result column="user_region" property="user_region"/>
+        <result column="user_weixin_account" property="user_weixin_account"/>
+        <result column="user_weixin_openid" property="user_weixin_openid"/>
+        <result column="user_status" property="user_status"/>
+        <result column="user_role" property="user_role"/>
+        <result column="user_money" property="user_money"/>
+        <result column="user_score" property="user_score"/>
+        <result column="shop_id" property="shop_id"/>
+        <result column="user_pid" property="user_pid"/>
+        <result column="user_pids" property="user_pids"/>
+        <result column="update_latest_time" property="update_latest_time"/>
+    </resultMap>
+
+    <sql id="table">
+        t_user
+    </sql>
+
+    <sql id="tableColumns">
+        <trim>
+            user_id,
+            user_name,
+            user_icon,
+            user_phone,
+            user_sex,
+            user_birthday,
+            user_region,
+            user_weixin_account,
+            user_weixin_openid,
+            user_status,
+            user_role,
+            user_money,
+            user_score,
+            shop_id,
+            user_pid,
+            user_pids,
+            update_latest_time
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库列 -->
+    <sql id="insertColumns">
+        <trim suffix="" suffixOverrides=",">
+            <if test="user_id != null and user_id != ''">user_id,</if>
+            <if test="user_name != null and user_name != ''">user_name,</if>
+            <if test="user_icon != null and user_icon != ''">user_icon,</if>
+            <if test="user_phone != null and user_phone != ''">user_phone,</if>
+            <if test="user_sex != null ">user_sex,</if>
+            <if test="user_birthday != null and user_birthday != ''">user_birthday,</if>
+            <if test="user_region != null and user_region != ''">user_region,</if>
+            <if test="user_weixin_account != null and user_weixin_account != ''">user_weixin_account,</if>
+            <if test="user_weixin_openid != null and user_weixin_openid != ''">user_weixin_openid,</if>
+            <if test="user_status != null ">user_status,</if>
+            <if test="user_role != null ">user_role,</if>
+            <if test="user_money != null and user_money != '' ">user_money,</if>
+            <if test="user_score != null ">user_score,</if>
+            <if test="shop_id != null and shop_id != ''">shop_id,</if>
+            <if test="user_pid != null and user_pid != '' ">user_pid,</if>
+            <if test="user_pids != null and user_pids != ''">user_pids,</if>
+            update_latest_time,
+        </trim>
+    </sql>
+
+    <!-- insertColumns 入库值 -->
+    <sql id="insertParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="user_id != null and user_id != ''">#{user_id,jdbcType=VARCHAR},</if>
+            <if test="user_name != null and user_name != ''">#{user_name,jdbcType=VARCHAR},</if>
+            <if test="user_icon != null and user_icon != ''">#{user_icon,jdbcType=VARCHAR},</if>
+            <if test="user_phone != null and user_phone != ''">#{user_phone,jdbcType=VARCHAR},</if>
+            <if test="user_sex != null ">${user_sex},</if>
+            <if test="user_birthday != null and user_birthday != '' ">${user_birthday,jdbcType=VARCHAR},</if>
+            <if test="user_region != null and user_region != ''">#{user_region,jdbcType=VARCHAR},</if>
+            <if test="user_weixin_account != null and user_weixin_account != ''">#{user_weixin_account,jdbcType=VARCHAR},</if>
+            <if test="user_weixin_openid != null and user_weixin_openid != ''">#{user_weixin_openid,jdbcType=VARCHAR},</if>
+            <if test="user_status != null">${user_status},</if>
+            <if test="user_role != null ">${user_role},</if>
+            <if test="user_money != null and user_money != ''">#{user_money,jdbcType=VARCHAR},</if>
+            <if test="user_score != null ">${user_score},</if>
+            <if test="shop_id != null and shop_id != '' ">#{shop_id,jdbcType=VARCHAR},</if>
+            <if test="user_pid != null and user_pid != ''">#{user_pid,jdbcType=VARCHAR},</if>
+            <if test="user_pids != null and user_pids != ''">#{user_pids,jdbcType=VARCHAR},</if>
+            now(),
+        </trim>
+    </sql>
+
+    <!-- updateParams  更新列 -->
+    <sql id="updateParams">
+        <trim suffix="" suffixOverrides=",">
+            <if test="user_name != null">
+                user_name=#{user_name,jdbcType=VARCHAR},
+            </if>
+            <if test="user_icon != null and user_icon != ''">
+                user_icon=#{user_icon,jdbcType=VARCHAR},
+            </if>
+            <if test="user_phone != null and user_phone != ''">
+                user_phone=#{user_phone,jdbcType=VARCHAR},
+            </if>
+            <if test="user_sex != null and user_sex != ''">
+                user_sex=#{user_sex,jdbcType=VARCHAR},
+            </if>
+            <if test="user_birthday != null and user_birthday != ''">
+                user_birthday=#{user_birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="user_region != null and user_region != ''">
+                user_region=#{user_region,jdbcType=VARCHAR},
+            </if>
+            <if test="user_weixin_account != null and user_weixin_account != ''">
+                user_weixin_account=#{user_birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="user_weixin_openid != null and user_weixin_openid != ''">
+                user_weixin_openid=#{user_weixin_openid,jdbcType=VARCHAR},
+            </if>
+            <if test="user_status != null">
+                user_status=${user_status},
+            </if>
+            <if test="user_role != null">
+                user_role=${user_role},
+            </if>
+            <if test="user_money != null and user_money != ''">
+                user_money=#{user_money,jdbcType=VARCHAR},
+            </if>
+            <if test="user_score != null">
+                user_score=#{user_score},
+            </if>
+            <if test="shop_id != null and shop_id != ''">
+                shop_id=#{shop_id,jdbcType=VARCHAR},
+            </if>
+            <if test="user_pid != null and user_pid != ''">
+                user_pid=#{user_pid,jdbcType=VARCHAR},
+            </if>
+            <if test="user_pids != null and user_pids != ''">
+                user_pids=#{user_pids,jdbcType=VARCHAR},
+            </if>
+            update_latest_time=now(),
+        </trim>
+    </sql>
+
+    <!-- fields  模糊查询 -->
+    <sql id="allAndLike">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.user_name != null and t.user_name != '' ">and user_name like
+                    concat('%',#{t.user_name},'%')
+                </if>
+                <if test="t.user_phone != null and t.user_phone != '' ">and user_phone like
+                    concat('%',#{t.user_phone},'%')
+                </if>
+                <if test="t.user_region != null   ">and user_region like
+                    concat('%',#{t.user_region},'%')
+                </if>
+                <if test="t.shop_id != null   ">and shop_id like
+                    concat('%',#{t.shop_id},'%')
+                </if>
+                <if test="t.user_pid != null   ">and user_pid like
+                    concat('%',#{t.user_pid},'%')
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- fields  精准查询 -->
+    <sql id="allAndEqual">
+        <trim suffix="" suffixOverrides=",">
+            <if test="t !=null ">
+                <if test="t.user_id != null  and t.user_id != '' ">and user_id =
+                    #{t.user_id}
+                </if>
+                <if test="t.user_name != null  and t.user_name != '' ">and user_name =
+                    #{t.user_name}
+                </if>
+                <if test="t.user_phone != null  and t.user_phone != ''  ">and user_phone =
+                    #{t.user_phone}
+                </if>
+                <if test="t.user_region != null  ">and user_region =
+                    #{t.user_region}
+                </if>
+            </if>
+        </trim>
+    </sql>
+
+    <!-- columnKey  主键 列名称 ,视图获取不到主键 需要设置 -->
+    <sql id="primaryKeys">
+        user_id = #{user_id}
+    </sql>
+
+
+    <sql id="queryParamSql">
+        <where>
+            <choose>
+                <when test="queryParam !=null and queryParam.like==true">
+                    <include refid="allAndLike"/>
+                </when>
+                <otherwise>
+                    <include refid="allAndEqual"/>
+                </otherwise>
+            </choose>
+            <if test="queryParam !=null and queryParam.queryCondition !=null">
+                <![CDATA[${queryParam.queryCondition}]]>
+            </if>
+
+        </where>
+
+        <choose>
+            <when test="queryParam !=null and queryParam.orderFiled !=null and queryParam.orderFiled!=''">
+                order by <![CDATA[${queryParam.orderFiled} ${queryParam.orderDirection}]]>
+            </when>
+            <when test="queryParam !=null and queryParam.orderFieldListStr !=null and queryParam.orderFieldListStr!=''">
+                order by <![CDATA[${queryParam.orderFieldListStr}]]>
+            </when>
+            <otherwise>
+                order by user_id desc
+            </otherwise>
+        </choose>
+
+        <if test="queryParam !=null and queryParam.limitOffSet !=null">
+            limit <![CDATA[${queryParam.limitOffSet},${queryParam.pageSize}]]>
+        </if>
+
+    </sql>
+
+    <!-- BaseMapper 对应接口 start  -->
+    <!-- 1.  查询,主键查询   -->
+    <select id="selectByPrimaryKey" resultMap="userResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </select>
+
+    <!-- 2. 查询,精准查询   -->
+    <select id="selectByEqualT" resultMap="userResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 3. 添加,插入记录   -->
+    <insert id="insert">
+        insert into t_user (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+    </insert>
+
+    <!-- 4. 修改,主键更新  -->
+    <update id="updateByPrimaryKey">
+        update t_user
+        <set>
+            <include refid="updateParams"/>
+        </set>
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </update>
+
+    <!-- 5. 查询,实体模糊查询   -->
+    <select id="selectByBlurryT" resultMap="userResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+        ORDER BY user_id
+    </select>
+
+    <!-- 6. 查询 ,总行数,分页 ,模型 -->
+    <select id="countByBlurryT" resultType="java.lang.Integer">
+        select count(1) from t_user
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- 7. 删除,主键删除   -->
+    <delete id="deleteByPrimaryKey">
+        delete from t_user
+        <where>
+            <include refid="primaryKeys"/>
+        </where>
+    </delete>
+
+    <!-- 8. 删除,按实体精准删除   -->
+    <select id="deleteByT" resultMap="userResult">
+        delete from t_user
+        <where>
+            <include refid="allAndEqual"/>
+        </where>
+    </select>
+
+    <!-- 9. 删除,按实体多字段模糊删除   -->
+    <select id="deleteByBlurryT" resultMap="userResult">
+        delete from t_user
+        <where>
+            <include refid="allAndLike"/>
+        </where>
+    </select>
+
+
+    <select id="listByModel" resultMap="userResult">
+        select
+        <include refid="tableColumns"/>
+        from t_user
+        <include refid="queryParamSql"/>
+    </select>
+
+    <!-- BaseMapper 对应接口 end   -->
+
+
+
+    <!-- OtherModule Mapper 对应接口 start  -->
+
+    <!-- OtherModule Mapper 对应接口 end  -->
+
+</mapper>
