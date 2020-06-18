@@ -30,6 +30,7 @@ public class ShopingCarController extends BaseController {
 
     /**
      * 所有商品 6. 加入购物车接口
+     * 完成第二块
      * @return
      */
     @PostMapping(value = "/shoping_cars")
