@@ -3,10 +3,14 @@ package com.hl.childhood.service.imp;
 import com.hl.childhood.mapper.BaseMapper;
 import com.hl.childhood.mapper.TgAddressMapper;
 import com.hl.childhood.service.TgAddressService;
+import com.hl.childhood.vo.tgAddress.TgAddress1VO;
+import com.hl.childhood.vo.tgAddress.TgAddressVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author ivan.huang
@@ -27,4 +31,13 @@ public class TgAddressServiceImp<T> extends BaseServiceImp<T> implements TgAddre
     }
 
 
+    @Override
+    public TgAddressVO getDefault(String loginer) {
+        return getMapper().getDefault(loginer);
+    }
+
+    @Override
+    public List<TgAddress1VO> tgAddressList(String loginer) {
+        return getMapper().tgAddressList(loginer);
+    }
 }

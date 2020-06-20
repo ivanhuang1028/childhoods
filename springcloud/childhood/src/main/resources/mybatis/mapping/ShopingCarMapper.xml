@@ -256,6 +256,50 @@ Copyright (c) 2016 by ivan.huang all rights reserved
 
 
     <!-- OtherModule Mapper 对应接口 start  -->
+    <resultMap type="com.hl.childhood.vo.shopingCar.ShopingCarVO" id="shopingCarVO">
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="spe_id" property="spe_id"/>
+        <result column="spe_name" property="spe_name"/>
+        <result column="spe_desc" property="spe_desc"/>
+        <result column="spe_price" property="spe_price"/>
+        <result column="sc_price" property="sc_price"/>
+        <result column="sc_num" property="sc_num"/>
+    </resultMap>
+
+    <select id="shopingCarsList" resultMap="shopingCarVO">
+        SELECT tg.goods_id, tg.goods_name, tgs.spe_id,
+        tgs.spe_name, tgs.spe_price, tsc.sc_price, tsc.sc_num
+        FROM t_shoping_car tsc
+        INNER JOIN t_goods_spe tgs
+        ON (tsc.spe_id = tgs.spe_id AND tsc.shop_id = #{shopId}
+            AND tsc.user_id = #{loginerId} )
+        INNER JOIN t_goods tg
+        ON (tgs.goods_id = tg.goods_id)
+        ORDER BY tsc.createtime DESC
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.shopingCar.ShopingCarGoodsVO" id="shopingCarGoodsVO">
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_image_link" property="goods_image_link"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_desc" property="goods_desc"/>
+        <result column="goods_price" property="goods_price"/>
+    </resultMap>
+
+    <select id="shopingCarsGoods" resultMap="shopingCarGoodsVO">
+        SELECT tg.goods_id, ti.image_remote_link AS 'goods_image_link',
+        tg.goods_name, tg.goods_desc, tg.goods_price
+        FROM t_goods tg
+        INNER JOIN t_search_his tsh
+        ON (tg.goods_search LIKE CONCAT('%', tsh.sh_value, '%')
+            AND tg.goods_status = 2)
+        INNER JOIN t_classify tc
+        ON (tc.classify_id = tg.classify_id AND tc.shop_id = #{shopId})
+        LEFT JOIN t_image ti
+        ON (tg.image_id = ti.image_id)
+        ORDER BY tg.createtime DESC
+    </select>
 
     <!-- OtherModule Mapper 对应接口 end  -->
 

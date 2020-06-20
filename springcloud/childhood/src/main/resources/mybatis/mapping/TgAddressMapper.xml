@@ -266,6 +266,41 @@ Copyright (c) 2016 by ivan.huang all rights reserved
 
 
     <!-- OtherModule Mapper 对应接口 start  -->
+    <resultMap type="com.hl.childhood.vo.tgAddress.TgAddressVO" id="tgAddressVO">
+        <result column="tga_id" property="tga_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="tg_name" property="tg_name"/>
+        <result column="tg_phone" property="tg_phone"/>
+        <result column="tg_address" property="tg_address"/>
+    </resultMap>
+
+    <select id="getDefault" resultMap="tgAddressVO">
+        SELECT ta.tga_id, ta.user_id, ta.tg_name, ta.tg_phone, ta.tg_address FROM t_tg_address ta
+        WHERE ta.user_id = #{loginer} AND ta.is_default = 1
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.tgAddress.TgAddress1VO" id="tgAddress1VO">
+        <result column="tga_id" property="tga_id"/>
+        <result column="user_id" property="user_id"/>
+        <result column="tg_name" property="tg_name"/>
+        <result column="tg_phone" property="tg_phone"/>
+        <result column="tg_address" property="tg_address"/>
+    </resultMap>
+
+    <select id="tgAddressList" resultMap="tgAddress1VO">
+        SELECT ta.tga_id, ta.user_id, ta.tg_name, ta.tg_phone, ta.tg_address, ta.is_default
+        FROM t_tg_address ta
+        WHERE ta.user_id = #{loginer}
+        ORDER BY ta.createtime DESC
+    </select>
+
+    <update id="clearDefault">
+        update t_tg_address set is_default = 0 where user_id = #{loginer}
+    </update>
+
+    <update id="setDefault">
+        update t_tg_address set is_default = 1 where tga_id = #{tga_id}
+    </update>
 
     <!-- OtherModule Mapper 对应接口 end  -->
 
