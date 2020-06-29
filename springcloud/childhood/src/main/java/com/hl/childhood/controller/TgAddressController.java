@@ -175,6 +175,26 @@ public class TgAddressController extends BaseController {
         return Result.getSuccResult();
     }
 
+    /**
+     * 购物车 9. 删除收货人地址接口
+     * @return
+     */
+    @DeleteMapping(value = "/tg_addresss")
+    public Result tgAddresssDelete(HttpServletRequest request, @RequestBody HashMap<String, String> paramMap){
+        try {
+            if(StringUtils.isEmpty(paramMap.get("tga_id"))){
+                return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 tga_id");
+            }
+
+            tgAddressService.deleteByPrimaryKey(paramMap.get("tga_id"));
+
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return Result.getFalseResult(ResultCode.FAILURE, e.getMessage());
+        }
+        return Result.getSuccResult();
+    }
+
 
 }
 

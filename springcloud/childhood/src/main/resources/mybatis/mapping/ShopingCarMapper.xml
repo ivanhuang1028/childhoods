@@ -257,6 +257,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
 
     <!-- OtherModule Mapper 对应接口 start  -->
     <resultMap type="com.hl.childhood.vo.shopingCar.ShopingCarVO" id="shopingCarVO">
+        <result column="sc_id" property="sc_id"/>
         <result column="goods_id" property="goods_id"/>
         <result column="goods_name" property="goods_name"/>
         <result column="spe_id" property="spe_id"/>
@@ -268,7 +269,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
     </resultMap>
 
     <select id="shopingCarsList" resultMap="shopingCarVO">
-        SELECT tg.goods_id, tg.goods_name, tgs.spe_id,
+        SELECT tsc.sc_id, tg.goods_id, tg.goods_name, tgs.spe_id,
         tgs.spe_name, tgs.spe_price, tsc.sc_price, tsc.sc_num
         FROM t_shoping_car tsc
         INNER JOIN t_goods_spe tgs
@@ -300,6 +301,33 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         ON (tg.image_id = ti.image_id)
         ORDER BY tg.createtime DESC
     </select>
+
+    <resultMap type="com.hl.childhood.vo.order.OrderGoodsVO" id="orderGoodsVO">
+        <result column="sc_id" property="sc_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="spe_name" property="spe_name"/>
+        <result column="spe_icon" property="spe_icon"/>
+        <result column="spe_desc" property="spe_desc"/>
+        <result column="spe_price" property="spe_price"/>
+        <result column="sc_price" property="sc_price"/>
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="sc_num" property="sc_num"/>
+    </resultMap>
+
+    <select id="orderGoods" resultMap="orderGoodsVO">
+        SELECT tsc.sc_id, tg.goods_name, tgs.spe_name, tgs.spe_icon, tgs.spe_desc,
+        tgs.spe_price, tsc.promotion_id, tsc.sc_price
+        FROM t_shoping_car tsc
+        INNER JOIN t_goods_spe tgs
+        ON (tsc.spe_id = tgs.spe_id
+            AND tsc.sc_id IN
+            <foreach collection="scIds" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        INNER JOIN t_goods tg
+        ON (tgs.goods_id = tg.goods_id)
+    </select>
+
 
     <!-- OtherModule Mapper 对应接口 end  -->
 
