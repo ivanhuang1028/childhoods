@@ -2,25 +2,19 @@ package com.hl.childhood.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.hl.childhood.module.Order;
-import com.hl.childhood.module.Shop;
-import com.hl.childhood.module.ShopingCar;
-import com.hl.childhood.service.OrderService;
-import com.hl.childhood.service.ShopService;
-import com.hl.childhood.service.ShopingCarService;
-import com.hl.childhood.util.StringUtil;
-import com.hl.childhood.vo.order.OrderGoodsVO;
-import com.hl.childhood.vo.order.OrderInfoVO;
-import com.hl.childhood.vo.order.ShopOrderVO;
+import com.hl.childhood.module.*;
+import com.hl.childhood.service.*;
+import com.hl.childhood.vo.order.*;
 import com.hl.common.constants.Result;
 import com.hl.common.constants.ResultCode;
+import com.hl.common.util.UUIDGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -44,6 +38,15 @@ public class OrderController extends BaseController {
 
     @Autowired
     private ShopingCarService<ShopingCar> shopingCarService;
+
+    @Autowired
+    private OrderGoodsService<OrderGoods> orderGoodsService;
+
+    @Autowired
+    private OrderCouponService<OrderCoupon> orderCouponService;
+
+    @Autowired
+    private UserCouponService<UserCoupon> userCouponService;
 
     /**
      * 购物车 10. 订单确认信息接口
@@ -90,15 +93,103 @@ public class OrderController extends BaseController {
                 }
             }
 
-//            vo.setOrder_coupons_can(orderService.getOrderCouponsCan(scIds, getLoginerId(request)));
-//            vo.setOrder_coupons_canot(orderService.getOrderCouponsCanot(scIds, getLoginerId(request)));
+            List<OrderCouponVO> order_coupons_can = new ArrayList<>();
+            for(String promotionId : promotionPrice.keySet()){
+                List<OrderCouponVO> vos1 = orderService.getOrderCoupon(promotionId, promotionPrice.get(promotionId), getLoginerId(request));
+                if(!ArrayUtils.isEmpty(vos1.toArray())){
+                    order_coupons_can.addAll(vos1);
+                }
+            }
+            vo.setOrder_coupons_can(order_coupons_can);
+
         }catch (Exception e){
             log.error(e.getMessage());
         }
         return Result.getSuccResult(vo);
     }
 
+    /**
+     * 购物车 12. 新增订单接口
+     * @return
+     */
+    @PostMapping(value = "/orders")
+    public Result ordersPost(HttpServletRequest request, @RequestBody HashMap<String, String> paramMap){
+        try {
+            if(StringUtils.isEmpty(paramMap.get("order_info"))){
+                return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 order_info");
+            }
+            if(StringUtils.isEmpty(paramMap.get("dic_id"))){
+                return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 dic_id");
+            }
+            if(StringUtils.isEmpty(paramMap.get("order_total"))){
+                return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 order_total");
+            }
 
+            //新增订单基础信息
+            Order order = new Order();
+            order.setOrder_id(UUIDGenerator.generate());
+            order.setUser_id(getLoginerId(request));
+            order.setOrder_total(new BigDecimal(paramMap.get("order_total")));
+            if(!StringUtils.isEmpty(paramMap.get("order_freight"))){
+                order.setOrder_freight(new BigDecimal(paramMap.get("order_freight")));
+            }
+            order.setOrder_type(1);
+            order.setPay_type(1);
+            order .setOrder_status(1);
+            if(!StringUtils.isEmpty(paramMap.get("order_msg"))){
+                order.setOrder_msg(paramMap.get("order_msg"));
+            }
+            order.setDis_type(paramMap.get("dic_id"));
+            if(!StringUtils.isEmpty(paramMap.get("tga_id"))){
+                order.setTga_id(paramMap.get("tga_id"));
+            }
+            orderService.insert(order);
+
+            //新增订单商品信息
+            List<OrderInfoVO> vos = JSON.parseObject(paramMap.get("order_info"), new TypeReference<ArrayList<OrderInfoVO>>(){});
+            List<String> scIds = new ArrayList<>();
+            for(OrderInfoVO orderInfoVO : vos){
+                scIds.add(orderInfoVO.getSc_id());
+            }
+            List<OrderGoodsVO1> orderGoodsList = shopingCarService.getOrderGoods(scIds);
+            for(OrderGoodsVO1 orderGoods1 : orderGoodsList){
+                OrderGoods orderGoods = new OrderGoods();
+                orderGoods.setTog_id(UUIDGenerator.generate());
+                orderGoods.setOrder_id(order.getOrder_id());
+                orderGoods.setPromotion_id(orderGoods1.getPromotion_id());
+                orderGoods.setGoods_id(orderGoods1.getGoods_id());
+                orderGoods.setSpe_id(orderGoods1.getSpe_id());
+                orderGoods.setSpe_price(orderGoods1.getSpe_price());
+                orderGoods.setSpe_seq(orderGoods1.getSpe_seq());
+                for(OrderInfoVO orderInfoVO : vos){
+                    if(StringUtils.equals(orderInfoVO.getSc_id(), orderGoods1.getSc_id())){
+                        orderGoods.setSpe_num(orderInfoVO.getSc_num());
+                    }
+                }
+                orderGoodsService.insert(orderGoods);
+            }
+
+            //新增订单优惠券
+            if(!StringUtils.isEmpty(paramMap.get("uc_id"))){
+                OrderCoupon orderCoupon = new OrderCoupon();
+                orderCoupon.setOc_id(UUIDGenerator.generate());
+                orderCoupon.setOrder_id(order.getOrder_id());
+                orderCoupon.setUc_id(paramMap.get("uc_id"));
+                orderCouponService.insert(orderCoupon);
+
+                UserCoupon uc = new UserCoupon();
+                uc.setUc_id(paramMap.get("uc_id"));
+                uc.setStatus(2);
+                userCouponService.updateByPrimaryKey(uc);
+            }
+
+
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return Result.getFalseResult(ResultCode.FAILURE, e.getMessage());
+        }
+        return Result.getSuccResult();
+    }
 
 
 }

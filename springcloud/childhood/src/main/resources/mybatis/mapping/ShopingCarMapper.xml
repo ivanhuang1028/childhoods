@@ -328,6 +328,30 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         ON (tgs.goods_id = tg.goods_id)
     </select>
 
+    <resultMap type="com.hl.childhood.vo.order.OrderGoodsVO1" id="orderGoodsVO1">
+        <result column="sc_id" property="sc_id"/>
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="spe_id" property="spe_id"/>
+        <result column="spe_price" property="spe_price"/>
+        <result column="spe_seq" property="spe_seq"/>
+    </resultMap>
+
+    <select id="orderGoods" resultMap="orderGoodsVO1">
+        SELECT result1.*, (@i:= @i+1) AS 'spe_seq'
+        FROM (
+        SELECT tsc.sc_id, tgs.goods_id, tsc.spe_id, tsc.sc_price AS 'spe_price', tsc.promotion_id
+        FROM t_shoping_car tsc
+        INNER JOIN t_goods_spe tgs
+        ON (tsc.spe_id = tgs.spe_id )
+        WHERE tsc.sc_id IN
+        <foreach collection="scIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        ORDER BY tsc.createtime
+        ) result1, (SELECT @i:=0) AS i
+    </select>
+
 
     <!-- OtherModule Mapper 对应接口 end  -->
 

@@ -42,8 +42,8 @@ public class Order implements Serializable {
     //给商家的留言
     private String order_msg;
 
-    //1为上门自取，2为免费送货到家，3为第三方快递
-    private Integer dis_type;
+    //1为上门自取，2为免费送货到家，3为第三方快递，字典管理
+    private String dis_type;
 
     //收款地址标识
     private String tga_id;

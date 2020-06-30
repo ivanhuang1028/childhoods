@@ -301,15 +301,9 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         <result column="dic_value" property="dic_value"/>
     </resultMap>
 
-    <select id="queryByName" resultMap="dicVO">
-        SELECT td.dic_id, td.dic_value FROM t_dictionary td WHERE td.dic_name = #{dic_name}
-        ORDER BY td.dic_seq
-    </select>
-
-    <select id="queryUserLabels" resultMap="dicVO">
-        SELECT td.dic_id, td.dic_value FROM t_user_label tul
-        INNER JOIN t_dictionary td
-        ON (tul.dic_id = td.dic_id AND tul.user_id = #{user_id} )
+    <select id="getMods" resultMap="dicVO">
+        SELECT td.dic_id, td.dic_value
+        FROM t_dictionary td WHERE td.dic_name = 'send_type'
         ORDER BY td.dic_seq
     </select>
 

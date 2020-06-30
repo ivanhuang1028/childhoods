@@ -18,6 +18,12 @@ public class OrderGoods implements Serializable {
     //订单标识
     private String order_id;
 
+    //活动标识
+    private String promotion_id;
+
+    //订单下商品标识
+    private String goods_id;
+
     //订单下商品规格标识
     private String spe_id;
 

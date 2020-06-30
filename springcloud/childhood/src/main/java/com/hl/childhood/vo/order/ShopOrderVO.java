@@ -17,5 +17,4 @@ public class ShopOrderVO {
     private List<OrderGoodsVO> order_goodss;
     private BigDecimal order_fp;
     private List<OrderCouponVO> order_coupons_can;
-    private List<OrderCouponVO> order_coupons_canot;
 }

@@ -23,6 +23,6 @@ public class UserCoupon implements Serializable {
     private String create_time;
 
     //1为有效、2为已用、3为过期
-    private String status;
+    private Integer status;
 
 }

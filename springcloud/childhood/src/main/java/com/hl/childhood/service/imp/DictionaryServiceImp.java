@@ -30,14 +30,8 @@ public class DictionaryServiceImp<T> extends BaseServiceImp<T> implements Dictio
         super.setMapper(mapper);
     }
 
-
     @Override
-    public List<DicVO> queryByName(String dic_name) {
-        return getMapper().queryByName(dic_name);
-    }
-
-    @Override
-    public List<DicVO> queryUserLabels(String user_id) {
-        return getMapper().queryUserLabels(user_id);
+    public List<DicVO> getMods() {
+        return getMapper().getMods();
     }
 }
