@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Data
 public class OrderGoodsVO {
     private String sc_id;
+    private String goods_name;
     private String spe_icon;
     private String spe_name;
     private String spe_desc;

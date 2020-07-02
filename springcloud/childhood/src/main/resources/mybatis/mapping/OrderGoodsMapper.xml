@@ -18,6 +18,8 @@ Copyright (c) 2016 by ivan.huang all rights reserved
     <resultMap type="com.hl.childhood.module.OrderGoods" id="orderGoodsResult">
         <result column="tog_id" property="tog_id"/>
         <result column="order_id" property="order_id"/>
+        <result column="promotion_id" property="promotion_id"/>
+        <result column="goods_id" property="goods_id"/>
         <result column="spe_id" property="spe_id"/>
         <result column="spe_num" property="spe_num"/>
         <result column="spe_price" property="spe_price"/>
@@ -32,6 +34,8 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         <trim>
             tog_id,
             order_id,
+            promotion_id,
+            goods_id,
             spe_id,
             spe_num,
             spe_price,
@@ -44,6 +48,8 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         <trim suffix="" suffixOverrides=",">
             <if test="tog_id != null and tog_id != ''">tog_id,</if>
             <if test="order_id != null and order_id != ''">order_id,</if>
+            <if test="promotion_id != null and promotion_id != ''">promotion_id,</if>
+            <if test="goods_id != null and goods_id != ''">goods_id,</if>
             <if test="spe_id != null and spe_id != ''">spe_id,</if>
             <if test="spe_num != null ">spe_num,</if>
             <if test="spe_price != null and spe_price != '' ">spe_price,</if>
@@ -56,6 +62,8 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         <trim suffix="" suffixOverrides=",">
             <if test="tog_id != null and tog_id != ''">#{tog_id,jdbcType=VARCHAR},</if>
             <if test="order_id != null and order_id != ''">#{order_id,jdbcType=VARCHAR},</if>
+            <if test="promotion_id != null and promotion_id != ''">#{promotion_id,jdbcType=VARCHAR},</if>
+            <if test="goods_id != null and goods_id != ''">#{goods_id,jdbcType=VARCHAR},</if>
             <if test="spe_id != null and spe_id != ''">#{spe_id,jdbcType=VARCHAR},</if>
             <if test="spe_num != null ">${spe_num},</if>
             <if test="spe_price != null and spe_price != ''">#{spe_price,jdbcType=VARCHAR},</if>

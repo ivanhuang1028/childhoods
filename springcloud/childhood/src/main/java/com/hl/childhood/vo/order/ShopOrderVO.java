@@ -15,6 +15,5 @@ public class ShopOrderVO {
     private String shop_id;
     private String shop_name;
     private List<OrderGoodsVO> order_goodss;
-    private BigDecimal order_fp;
     private List<OrderCouponVO> order_coupons_can;
 }

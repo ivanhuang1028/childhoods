@@ -40,4 +40,14 @@ public class TgAddressServiceImp<T> extends BaseServiceImp<T> implements TgAddre
     public List<TgAddress1VO> tgAddressList(String loginer) {
         return getMapper().tgAddressList(loginer);
     }
+
+    @Override
+    public void clearDefault(String loginerId) {
+        getMapper().clearDefault(loginerId);
+    }
+
+    @Override
+    public void setDefault(String tga_id) {
+        getMapper().setDefault(tga_id);
+    }
 }

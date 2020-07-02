@@ -56,13 +56,12 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         <trim suffix="" suffixOverrides=",">
             <if test="order_id != null and order_id != ''">order_id,</if>
             <if test="user_id != null and user_id != ''">user_id,</if>
-            <if test="create_time != null and create_time != ''">create_time,</if>
-            <if test="end_time != null and end_time != ''">end_time,</if>
+            create_time,
             <if test="order_total != null and order_total != ''">order_total,</if>
             <if test="order_freight != null and order_freight != ''">order_freight,</if>
             <if test="order_type != null  ">order_type,</if>
             <if test="pay_type != null ">pay_type,</if>
-            <if test="order_status != null and order_status != ''">order_status,</if>
+            <if test="order_status != null ">order_status,</if>
             <if test="order_msg != null and order_msg != ''">order_msg,</if>
             <if test="dis_type != null ">dis_type,</if>
             <if test="tga_id != null and tga_id != ''">tga_id,</if>
@@ -75,14 +74,13 @@ Copyright (c) 2016 by ivan.huang all rights reserved
             <if test="order_id != null and order_id != ''">#{order_id,jdbcType=VARCHAR},</if>
             <if test="user_id != null and user_id != ''">#{user_id,jdbcType=VARCHAR},</if>
             now(),
-            <if test="end_time != null and end_time != ''">#{end_time,jdbcType=VARCHAR},</if>
             <if test="order_total != null and order_total != ''">#{order_total,jdbcType=VARCHAR},</if>
             <if test="order_freight != null and order_freight != ''">#{order_freight,jdbcType=VARCHAR},</if>
             <if test="order_type != null ">${order_type},</if>
             <if test="pay_type != null">${pay_type},</if>
             <if test="order_status != null ">${order_status},</if>
             <if test="order_msg != null and order_msg != ''">#{order_msg,jdbcType=VARCHAR},</if>
-            <if test="dis_type != null ">${dis_type},</if>
+            <if test="dis_type != null and dis_type != '' ">#{dis_type,jdbcType=VARCHAR},</if>
             <if test="tga_id != null and tga_id != ''">#{tga_id,jdbcType=VARCHAR},</if>
         </trim>
     </sql>
@@ -226,7 +224,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
 
     <!-- 3. 添加,插入记录   -->
     <insert id="insert">
-        insert into t_order (<include refid="insertColumns"/>) values(<include refid="insertParams"/>);
+        insert into t_order (<include refid="insertColumns"/>) values(<include refid="insertParams"/>)
     </insert>
 
     <!-- 4. 修改,主键更新  -->
@@ -295,6 +293,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
 
     <!-- OtherModule Mapper 对应接口 start  -->
     <resultMap type="com.hl.childhood.vo.order.OrderCouponVO" id="orderCouponVO">
+        <result column="uc_id" property="uc_id"/>
         <result column="coupon_id" property="coupon_id"/>
         <result column="coupon_title" property="coupon_title"/>
         <result column="start_time" property="start_time"/>
@@ -306,7 +305,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
     </resultMap>
 
     <select id="getOrderCoupon" resultMap="orderCouponVO">
-        SELECT tc.coupon_id, tc.coupon_title, tc.create_time, tc.end_time,
+        SELECT tuc.uc_id, tc.coupon_id, tc.coupon_title, tc.create_time, tc.end_time,
         tc.coupon_type, tc.coupon_amount, tc.used_amount
         FROM t_user_coupon tuc
         INNER JOIN t_coupon tc

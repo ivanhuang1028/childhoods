@@ -104,7 +104,7 @@ public class TgAddressController extends BaseController {
     public Result tgAddresssEdit(HttpServletRequest request, @RequestBody HashMap<String, String> paramMap,
                                  @PathVariable("tga_id") String tga_id){
         try {
-            if(StringUtils.isEmpty(paramMap.get("tga_id"))){
+            if(StringUtils.isEmpty(tga_id)){
                 return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 tga_id");
             }
 

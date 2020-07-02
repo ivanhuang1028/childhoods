@@ -320,10 +320,10 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         FROM t_shoping_car tsc
         INNER JOIN t_goods_spe tgs
         ON (tsc.spe_id = tgs.spe_id
-            AND tsc.sc_id IN
-            <foreach collection="scIds" item="id" index="index" open="(" close=")" separator=",">
-                #{id}
-            </foreach>
+        AND tsc.sc_id IN
+        <foreach collection="scIds" item="id" index="index" open="(" close=")" separator=",">#{id}
+        </foreach>
+        )
         INNER JOIN t_goods tg
         ON (tgs.goods_id = tg.goods_id)
     </select>
@@ -337,7 +337,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
         <result column="spe_seq" property="spe_seq"/>
     </resultMap>
 
-    <select id="orderGoods" resultMap="orderGoodsVO1">
+    <select id="getOrderGoods" resultMap="orderGoodsVO1">
         SELECT result1.*, (@i:= @i+1) AS 'spe_seq'
         FROM (
         SELECT tsc.sc_id, tgs.goods_id, tsc.spe_id, tsc.sc_price AS 'spe_price', tsc.promotion_id

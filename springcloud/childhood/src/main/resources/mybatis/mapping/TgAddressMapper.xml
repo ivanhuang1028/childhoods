@@ -56,7 +56,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
             <if test="tg_address != null and tg_address != '' ">tg_address,</if>
             <if test="tg_num != null and tg_num != ''">tg_num,</if>
             <if test="is_default != null ">is_default,</if>
-            create_time,
+            createtime,
         </trim>
     </sql>
 
@@ -68,7 +68,7 @@ Copyright (c) 2016 by ivan.huang all rights reserved
             <if test="tg_name != null and tg_name != ''">#{tg_name,jdbcType=VARCHAR},</if>
             <if test="tg_phone != null and tg_phone != ''">#{tg_phone,jdbcType=VARCHAR},</if>
             <if test="tg_ssq != null and tg_ssq != ''">#{tg_ssq,jdbcType=VARCHAR},</if>
-            <if test="tg_address != null and tg_address != ''">${tg_address,jdbcType=VARCHAR},</if>
+            <if test="tg_address != null and tg_address != ''">#{tg_address,jdbcType=VARCHAR},</if>
             <if test="tg_num != null and tg_num != ''">#{tg_num,jdbcType=VARCHAR},</if>
             <if test="is_default != null ">${is_default},</if>
             now(),

@@ -9,6 +9,7 @@ import java.math.BigDecimal;
  */
 @Data
 public class OrderCouponVO {
+    private String uc_id;
     private String coupon_id;
     private String coupon_title;
     private String start_time;

@@ -53,16 +53,16 @@ public class OrderController extends BaseController {
      * @return
      */
     @GetMapping(value = "/orders/draft/{shop_id}")
-    public Result ordersDraft(HttpServletRequest request, String order_info, @PathVariable("shop_id") String shop_id){
+    public Result ordersDraft(HttpServletRequest request, @PathVariable("shop_id") String shop_id, @RequestBody OrderDraftVO orderDraftVO){
         ShopOrderVO vo = new ShopOrderVO();
         try {
-            if(StringUtils.isEmpty(order_info)){
+            if(orderDraftVO == null || ArrayUtils.isEmpty(orderDraftVO.getOrder_info().toArray())){
                 return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 order_info");
             }
             if(StringUtils.isEmpty(shop_id)){
                 return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 shop_id");
             }
-            List<OrderInfoVO> vos = JSON.parseObject(order_info, new TypeReference<ArrayList<OrderInfoVO>>(){});
+            List<OrderInfoVO> vos = orderDraftVO.getOrder_info();
             List<String> scIds = new ArrayList<>();
             for(OrderInfoVO orderInfoVO : vos){
                 scIds.add(orderInfoVO.getSc_id());
@@ -113,15 +113,15 @@ public class OrderController extends BaseController {
      * @return
      */
     @PostMapping(value = "/orders")
-    public Result ordersPost(HttpServletRequest request, @RequestBody HashMap<String, String> paramMap){
+    public Result ordersPost(HttpServletRequest request, @RequestBody OrderPramaterVO orderPramaterVO){
         try {
-            if(StringUtils.isEmpty(paramMap.get("order_info"))){
+            if(orderPramaterVO.getOrder_info() == null || ArrayUtils.isEmpty(orderPramaterVO.getOrder_info().toArray())){
                 return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 order_info");
             }
-            if(StringUtils.isEmpty(paramMap.get("dic_id"))){
+            if(StringUtils.isEmpty(orderPramaterVO.getDic_id())){
                 return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 dic_id");
             }
-            if(StringUtils.isEmpty(paramMap.get("order_total"))){
+            if(StringUtils.isEmpty(orderPramaterVO.getOrder_total())){
                 return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 order_total");
             }
 
@@ -129,24 +129,24 @@ public class OrderController extends BaseController {
             Order order = new Order();
             order.setOrder_id(UUIDGenerator.generate());
             order.setUser_id(getLoginerId(request));
-            order.setOrder_total(new BigDecimal(paramMap.get("order_total")));
-            if(!StringUtils.isEmpty(paramMap.get("order_freight"))){
-                order.setOrder_freight(new BigDecimal(paramMap.get("order_freight")));
+            order.setOrder_total(new BigDecimal(orderPramaterVO.getOrder_total()));
+            if(!StringUtils.isEmpty(orderPramaterVO.getOrder_freight())){
+                order.setOrder_freight(new BigDecimal(orderPramaterVO.getOrder_freight()));
             }
             order.setOrder_type(1);
             order.setPay_type(1);
             order .setOrder_status(1);
-            if(!StringUtils.isEmpty(paramMap.get("order_msg"))){
-                order.setOrder_msg(paramMap.get("order_msg"));
+            if(!StringUtils.isEmpty(orderPramaterVO.getOrder_msg())){
+                order.setOrder_msg(orderPramaterVO.getOrder_msg());
             }
-            order.setDis_type(paramMap.get("dic_id"));
-            if(!StringUtils.isEmpty(paramMap.get("tga_id"))){
-                order.setTga_id(paramMap.get("tga_id"));
+            order.setDis_type(orderPramaterVO.getDic_id());
+            if(!StringUtils.isEmpty(orderPramaterVO.getTga_id())){
+                order.setTga_id(orderPramaterVO.getTga_id());
             }
             orderService.insert(order);
 
             //新增订单商品信息
-            List<OrderInfoVO> vos = JSON.parseObject(paramMap.get("order_info"), new TypeReference<ArrayList<OrderInfoVO>>(){});
+            List<OrderInfoVO> vos = orderPramaterVO.getOrder_info();
             List<String> scIds = new ArrayList<>();
             for(OrderInfoVO orderInfoVO : vos){
                 scIds.add(orderInfoVO.getSc_id());
@@ -170,19 +170,18 @@ public class OrderController extends BaseController {
             }
 
             //新增订单优惠券
-            if(!StringUtils.isEmpty(paramMap.get("uc_id"))){
+            if(!StringUtils.isEmpty(orderPramaterVO.getUc_id())){
                 OrderCoupon orderCoupon = new OrderCoupon();
                 orderCoupon.setOc_id(UUIDGenerator.generate());
                 orderCoupon.setOrder_id(order.getOrder_id());
-                orderCoupon.setUc_id(paramMap.get("uc_id"));
+                orderCoupon.setUc_id(orderPramaterVO.getUc_id());
                 orderCouponService.insert(orderCoupon);
 
                 UserCoupon uc = new UserCoupon();
-                uc.setUc_id(paramMap.get("uc_id"));
+                uc.setUc_id(orderPramaterVO.getUc_id());
                 uc.setStatus(2);
                 userCouponService.updateByPrimaryKey(uc);
             }
-
 
         }catch (Exception e){
             log.error(e.getMessage());
