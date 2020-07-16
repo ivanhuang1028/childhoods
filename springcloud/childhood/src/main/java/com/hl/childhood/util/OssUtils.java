@@ -114,12 +114,12 @@ public class OssUtils {
 	
 	public static void main(String[] args)  {
 
-		String endpoint = "http://oss-cn-shenzhen.aliyuncs.com";
-		String accessKeyId = "LTAI4FxJ7pVx1QwWyUP77k3A";
-		String accessKeySecret = "v1dPkbzlnJYiAVzbvywkjbqQgbj85R";
-		String bucketName = "instranger";
+		String endpoint = "http://oss-cn-beijing.aliyuncs.com";
+		String accessKeyId = "LTAI4G3WtDqwkL2jBnRAAP1e";
+		String accessKeySecret = "kft4O5oPyIikkaiZpXwfebmJgWxNRM";
+		String bucketName = "ytnvip";
 		String originalPath = "D:\\logo.png";
-		String targetPath = "user/c9c4756847584a999cfc91b8e2a78c89/topic/081f94a3fac74b61a2272ed2b2d15f3a/logo.png";
+		String targetPath = "user/ccacc22cba924f728cf33c6cd1dcfc29/icon/logo.png";
 		try {
 			String url = uploadOssReturnUrl(endpoint, accessKeyId, accessKeySecret,bucketName, originalPath, targetPath);
 			System.out.println("url : " + url );

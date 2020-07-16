@@ -28,7 +28,7 @@ public class User implements Serializable {
     private Integer user_sex;
 
     //生日
-    private Date user_birthday;
+    private String user_birthday;
 
     //地区
     private String user_region;

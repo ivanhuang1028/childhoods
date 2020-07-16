@@ -334,6 +334,154 @@ Copyright (c) 2016 by ivan.huang all rights reserved
 
     <!-- OtherModule Mapper 对应接口 start  -->
 
+    <resultMap type="com.hl.childhood.vo.user.UserInfoVO" id="userInfoVO">
+        <result column="user_id" property="user_id"/>
+        <result column="user_icon" property="user_icon"/>
+        <result column="user_name" property="user_name"/>
+        <result column="user_phone" property="user_phone"/>
+        <result column="user_sex" property="user_sex"/>
+        <result column="user_birthday" property="user_birthday"/>
+        <result column="user_region" property="user_region"/>
+        <result column="user_weixin_account" property="user_weixin_account"/>
+        <result column="tg_address" property="tg_address"/>
+    </resultMap>
+
+    <select id="getUserInfo" resultMap="userInfoVO">
+        SELECT tu.user_id, tu.user_icon, tu.user_name, tu.user_phone, tu.user_sex,
+        tu.user_birthday, tu.user_region, tu.user_weixin_account, tta.tg_address
+        FROM t_user tu
+        LEFT JOIN t_tg_address tta
+        ON (tta.user_id = tu.user_id AND tta.is_default = 1)
+        WHERE tu.user_id = #{loginId}
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.user.UserMoneyVO" id="userMoneyVO">
+        <result column="money" property="money"/>
+        <result column="score" property="score"/>
+        <result column="coupon_num" property="coupon_num"/>
+    </resultMap>
+
+    <select id="getMoneyInfo" resultMap="userMoneyVO">
+        SELECT tu.user_money AS 'money', tu.user_score AS 'score',
+        (SELECT COUNT(1) FROM t_user_coupon tuc WHERE tuc.user_id = tu.user_id AND tuc.status = 1) AS 'coupon_num'
+        FROM t_user tu
+        WHERE tu.user_id = #{loginId}
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.user.UserCouponsVO" id="userCouponsVO">
+        <result column="uc_id" property="uc_id"/>
+        <result column="coupon_id" property="coupon_id"/>
+        <result column="coupon_title" property="coupon_title"/>
+        <result column="start_time" property="start_time"/>
+        <result column="end_time" property="end_time"/>
+        <result column="coupon_type" property="coupon_type"/>
+        <result column="coupon_amount" property="coupon_amount"/>
+        <result column="used_amount" property="used_amount"/>
+    </resultMap>
+
+    <select id="getUserCoupns" resultMap="userCouponsVO">
+        SELECT tuc.uc_id, tc.coupon_id, tc.coupon_title, tc.start_time,
+        tc.end_time, tc.coupon_type, tc.coupon_amount, tc.used_amount
+        FROM t_user_coupon tuc
+        INNER JOIN t_coupon tc
+        ON (tuc.coupon_id = tc.coupon_id
+        AND tuc.user_id = #{loginId}
+        AND tc.coupon_status = 1)
+        ORDER BY tuc.create_time DESC
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.user.UserMoneyRecordVO" id="userMoneyRecordVO">
+        <result column="mr_id" property="mr_id"/>
+        <result column="mr_type" property="mr_type"/>
+        <result column="order_id" property="order_id"/>
+        <result column="order_code" property="order_code"/>
+        <result column="order_username" property="order_username"/>
+        <result column="order_price" property="order_price"/>
+        <result column="commission" property="commission"/>
+        <result column="cr_id" property="cr_id"/>
+        <result column="cr_num" property="cr_num"/>
+        <result column="commit_money" property="commit_money"/>
+        <result column="create_time" property="create_time"/>
+    </resultMap>
+
+    <select id="getUserMoneyRecords" resultMap="userMoneyRecordVO">
+        SELECT tmr.mr_id, tmr.mr_type, tmr.order_id, tor.order_code,
+        tu.user_name AS 'order_username', tor.order_total, tmr.commission,
+        tmr.cr_id, tmr.cr_num, tmr.commit_money, tmr.create_time
+        FROM t_money_record tmr
+        LEFT JOIN t_order tor
+        ON (tor.order_id = tmr.order_id)
+        LEFT JOIN t_user tu
+        ON (tor.user_id = tu.user_id)
+        WHERE tmr.user_id = #{loginId}
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.user.UserScoreRecordVO" id="userScoreRecordVO">
+        <result column="ur_id" property="ur_id"/>
+        <result column="record_type" property="record_type"/>
+        <result column="order_id" property="order_id"/>
+        <result column="order_code" property="order_code"/>
+        <result column="order_username" property="order_username"/>
+        <result column="order_price" property="order_price"/>
+        <result column="recommend_id" property="recommend_id"/>
+        <result column="recommend_name" property="recommend_name"/>
+        <result column="mr_id" property="mr_id"/>
+        <result column="mr_score" property="mr_score"/>
+        <result column="score" property="score"/>
+        <result column="record_time" property="record_time"/>
+    </resultMap>
+
+    <select id="getUserScoreRecords" resultMap="userScoreRecordVO">
+        SELECT tsr.ur_id, tsr.record_type, tsr.order_id, tor.order_code,
+        tu.user_name AS 'order_username', tor.order_total, tsr.recommend_id,
+        tu1.user_name AS 'recommend_name', tsr.mr_id, tsr.mr_score, tsr.score, tsr.record_time
+        FROM t_score_record tsr
+        LEFT JOIN t_user tu1
+        ON (tsr.recommend_id = tu1.user_id)
+        LEFT JOIN t_order tor
+        ON (tsr.order_id = tor.order_id)
+        LEFT JOIN t_user tu
+        ON (tor.user_id = tu.user_id)
+        WHERE tsr.user_id = #{loginId}
+    </select>
+
+    <resultMap type="com.hl.childhood.vo.user.UserOrdersVO" id="userOrdersVO">
+        <result column="shop_id" property="shop_id"/>
+        <result column="shop_name" property="shop_name"/>
+        <result column="order_id" property="order_id"/>
+        <result column="order_code" property="order_code"/>
+        <result column="order_status" property="order_status"/>
+        <result column="order_total" property="order_total"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="spe_id" property="spe_id"/>
+        <result column="spe_name" property="spe_name"/>
+        <result column="spe_num" property="spe_num"/>
+        <result column="goods_num" property="goods_num"/>
+    </resultMap>
+
+    <select id="getUserOrders" resultMap="userOrdersVO">
+        SELECT ts.shop_id, ts.shop_name, tor.order_id, tor.order_code,
+        tor.order_status, tor.order_total, tog.goods_id, tg.goods_name,
+        tog.spe_id, tgs.spe_name, tog.spe_num,
+        (SELECT COUNT(1) FROM t_order_goods tog1 WHERE tog1.order_id = tor.order_id) AS 'goods_num'
+        FROM t_order tor
+        INNER JOIN t_shop ts
+        ON (tor.shop_id = ts.shop_id
+            AND tor.user_id = #{loginId}
+            <if test="order_status != null and order_status != ''">
+                AND tor.order_status = ${order_status}
+            </if>
+        )
+        LEFT JOIN t_order_goods tog
+        ON (tog.order_id = tor.order_id AND tog.spe_seq = 1)
+        LEFT JOIN t_goods tg
+        ON (tog.goods_id = tg.goods_id)
+        LEFT JOIN t_goods_spe tgs
+        ON (tog.spe_id = tgs.spe_id)
+        ORDER BY tor.create_time DESC
+    </select>
+
     <!-- OtherModule Mapper 对应接口 end  -->
 
 </mapper>

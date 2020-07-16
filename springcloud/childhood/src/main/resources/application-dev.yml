@@ -32,3 +32,12 @@ log:
 # 图像本地临时存放根目录
 image-path:
   localPicPath: D:\\upload
+
+# OSS 配置
+oss:
+  accessKeyId: LTAI4G3WtDqwkL2jBnRAAP1e
+  accessKeySecret: kft4O5oPyIikkaiZpXwfebmJgWxNRM
+  bucketName: ytnvip
+  endpoint: http://oss-cn-beijing.aliyuncs.com
+  userPath: user/
+  shopPath: shop/

@@ -12,6 +12,6 @@ public class OssConfig {
     private String accessKeySecret;
     private String bucketName;
     private String endpoint;
-    private String path;
-    private String msgPath;
+    private String userPath;
+    private String shopPath;
 }
