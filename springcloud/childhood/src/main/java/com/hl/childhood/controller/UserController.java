@@ -3,6 +3,7 @@ package com.hl.childhood.controller;
 import com.github.pagehelper.PageHelper;
 import com.hl.childhood.module.User;
 import com.hl.childhood.properties.ImagePath;
+import com.hl.childhood.properties.JwtConfig;
 import com.hl.childhood.properties.OssConfig;
 import com.hl.childhood.service.UserService;
 import com.hl.childhood.util.ImageBase64Converter;
@@ -14,6 +15,8 @@ import com.hl.childhood.vo.page.ResultsPageVO;
 import com.hl.childhood.vo.user.*;
 import com.hl.common.constants.Result;
 import com.hl.common.constants.ResultCode;
+import com.hl.common.util.JwtHelper;
+import com.hl.common.util.UUIDGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +46,9 @@ public class UserController extends BaseController {
 
     @Autowired
     private OssConfig ossConfig;
+
+    @Autowired
+    private JwtConfig jwtConfig;
 
     /**
      * 个人中心 1. 登录人信息接口
@@ -176,6 +182,57 @@ public class UserController extends BaseController {
         userOrdersVO = userService.getUserOrders(getLoginerId(request), order_status);
         ResultsPageVO resultsPageVO = ResultsPageVO.init(userOrdersVO, pageVO);
         return Result.getSuccResult(resultsPageVO);
+    }
+
+    /**
+     * 登录 1. 微信登录接口
+     * @return
+     */
+    @PostMapping(value = "/login/weixin")
+    public Result loginWeiXin(HttpServletRequest request, @RequestBody HashMap<String, String> paramMap){
+        try {
+            if(org.apache.commons.lang.StringUtils.isEmpty(paramMap.get("weixin_openId"))){
+                return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 weixin_openId");
+            }
+            if(org.apache.commons.lang.StringUtils.isEmpty(paramMap.get("shop_id"))){
+                return Result.getFalseResult(ResultCode.PARAMETER_ERROR, "缺参数 shop_id");
+            }
+            User tmp = new User();
+            tmp.setUser_weixin_openid(paramMap.get("weixin_openId"));
+            tmp.setShop_id(paramMap.get("shop_id"));
+            tmp.setUser_status(1);
+            User current = userService.selectByEqualT(tmp);
+            if(current == null || StringUtils.isEmpty(current.getUser_id())){
+                //新用户，需插入信息
+                User user = new User();
+                user.setUser_id(UUIDGenerator.generate());
+                user.setUser_weixin_openid(paramMap.get("weixin_openId"));
+                user.setShop_id(paramMap.get("shop_id"));
+                if(!StringUtils.isEmpty(paramMap.get("weixin_nickname"))){
+                    user.setUser_name(paramMap.get("weixin_nickname"));
+                }
+                if(!StringUtils.isEmpty(paramMap.get("weixin_icon"))){
+                    user.setUser_icon(paramMap.get("weixin_icon"));
+                }
+                if(!StringUtils.isEmpty(paramMap.get("weixin_gender"))){
+                    user.setUser_sex(Integer.valueOf(paramMap.get("weixin_gender")));
+                }
+                user.setUser_status(1);
+                user.setUser_role(1);
+                user.setUser_pid("0");
+                user.setUser_pids("0");
+                userService.insert(user);
+                String jwt = JwtHelper.createJWT(user.getUser_name(), user.getUser_id(), user.getShop_id(),"", "", jwtConfig.getExpDates(), jwtConfig.getEncodedKey());
+                return Result.getSuccResult(ResultCode.SUCCESS, "jwt", jwt);
+            }else {
+                String jwt = JwtHelper.createJWT(tmp.getUser_name(), tmp.getUser_id(), tmp.getShop_id(),"", "", jwtConfig.getExpDates(), jwtConfig.getEncodedKey());
+                return Result.getSuccResult(ResultCode.SUCCESS, "jwt", jwt);
+            }
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return Result.getFalseResult(ResultCode.FAILURE, e.getMessage());
+        }
+
     }
 
 }

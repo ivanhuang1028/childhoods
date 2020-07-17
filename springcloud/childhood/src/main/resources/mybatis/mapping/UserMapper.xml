@@ -195,8 +195,14 @@ Copyright (c) 2016 by ivan.huang all rights reserved
                 <if test="t.user_phone != null  and t.user_phone != ''  ">and user_phone =
                     #{t.user_phone}
                 </if>
-                <if test="t.user_region != null  ">and user_region =
-                    #{t.user_region}
+                <if test="t.user_weixin_openid != null  and t.user_weixin_openid != ''  ">and user_weixin_openid =
+                    #{t.user_weixin_openid}
+                </if>
+                <if test="t.user_status != null ">and user_status =
+                    ${t.user_status}
+                </if>
+                <if test="t.shop_id != null  and t.shop_id != '' ">and shop_id =
+                    #{t.shop_id}
                 </if>
             </if>
         </trim>

@@ -21,7 +21,7 @@ pagehelper:
 # jwt
 jwt:
   encodedKey: L7A/6zARSkK1j7Vd5SDD9pSSqZlqF7mAhiOgRbgv9Smce6tf4cJnvKOjtKPxNNnWQj+2lQEScm3XIUjhW+YVZg==
-  audience: ins
+  audience: childhood
   issuer: hl
   expDates: 7
 
@@ -45,8 +45,6 @@ my-props:
 api-management:
   exclude-path-patterns:
     - /login/weixin
-    - /login/onekey
-    - /login/getphone
 
 # 分页默认配置
 pageSize: 10
